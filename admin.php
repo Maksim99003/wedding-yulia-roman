@@ -165,6 +165,8 @@ tbody tr:last-child td{border-bottom:none}
 .td-members span{display:block;font-size:.82rem;color:#9e7d72;font-weight:400}
 .gender-select{padding:9px 6px;border:1.5px solid #ddd;border-radius:8px;font-size:.88rem;outline:none;background:#fff;cursor:pointer;min-width:68px;flex-shrink:0}
 .gender-select:focus{border-color:#C07068}
+.export-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;background:#1a6640;color:#fff;border-radius:6px;font-size:.78rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;transition:background .2s}
+.export-btn:hover{background:#145535;color:#fff}
 
 @media(max-width:700px){
   .hdr{padding:0 16px} .body-wrap{padding:16px}
@@ -257,7 +259,10 @@ tbody tr:last-child td{border-bottom:none}
   <div class="tbl-wrap">
     <div class="tbl-top">
       <h2>Список гостей</h2>
-      <span class="tbl-count">Всего: <?= $stats['total'] ?></span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="tbl-count">Всего: <?= $stats['total'] ?></span>
+        <a href="export.php" class="export-btn">↓ Экспорт Excel</a>
+      </div>
     </div>
     <table>
       <thead>
