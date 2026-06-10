@@ -1256,13 +1256,11 @@ body.a11y .letter__text {
 }
 body.a11y .letter__sig { font-size: 1.4rem !important; color: #b54a42 !important; }
 
-/* ── Герой: убираем фото, тёмный оверлей → белый фон ── */
+/* ── Герой: фото пионов остаётся, увеличиваем текст ── */
 body.a11y .hero {
-  background: #fff8f5 !important;
   min-height: auto !important;
   padding: 56px 20px 48px !important;
 }
-body.a11y .hero__bg,
 body.a11y .hero__petals { display: none !important; }
 body.a11y .hero__names  {
   color: #111 !important;
