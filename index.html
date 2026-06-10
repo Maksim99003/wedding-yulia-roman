@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#2A1510" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>Юлия &amp; Роман — 25.07.2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <a class="skip-link" href="#main-content">Перейти к содержимому</a>
+
+  <!-- SVG-фильтр для заострения фона -->
+  <svg class="svg-filters" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <filter id="sharpen" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feConvolveMatrix order="3"
+          kernelMatrix="0 -0.8 0  -0.8 4.2 -0.8  0 -0.8 0"
+          preserveAlpha="true" />
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- ░░ HERO ░░ -->
+  <section class="hero" id="hero" aria-label="Главная — приглашение на свадьбу">
+    <div class="fl fl--hero-tl" aria-hidden="true"></div>
+    <div class="fl fl--hero-br" aria-hidden="true"></div>
+    <!-- Фоновое фото пионов с анимацией -->
+    <div class="hero__bg" aria-hidden="true">
+      <div class="hero__bg-img"></div>
+      <div class="hero__bg-overlay"></div>
+    </div>
+    <div class="hero__petals" id="petals"></div>
+    <div class="hero__content">
+      <p class="hero__label fade-up">приглашение на свадьбу</p>
+      <h1 class="hero__names fade-up delay-1">Юлия <span class="amp">&amp;</span> Роман</h1>
+      <div class="hero__divider fade-up delay-2">
+        <span></span><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2C9 7 2 8 2 13c0 3.3 2.7 6 6 6 1.7 0 3.2-.7 4-1.8.8 1.1 2.3 1.8 4 1.8 3.3 0 6-2.7 6-6 0-5-7-6-10-11z" fill="#F9DDD8" opacity=".9"/></svg><span></span>
+      </div>
+      <p class="hero__date fade-up delay-3">25 июля 2026</p>
+      <a href="#program" class="hero__scroll fade-up delay-4">
+        <span>листайте вниз</span>
+        <svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 3v14M4 13l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </a>
+    </div>
+    <div class="hero__countdown fade-up delay-4" id="countdown" role="timer" aria-label="Обратный отсчёт до свадьбы" aria-live="off">
+      <div class="cd-item"><span class="cd-num" id="cd-d">00</span><span class="cd-label">дней</span></div>
+      <div class="cd-sep">·</div>
+      <div class="cd-item"><span class="cd-num" id="cd-h">00</span><span class="cd-label">часов</span></div>
+      <div class="cd-sep">·</div>
+      <div class="cd-item"><span class="cd-num" id="cd-m">00</span><span class="cd-label">минут</span></div>
+      <div class="cd-sep">·</div>
+      <div class="cd-item"><span class="cd-num" id="cd-s">00</span><span class="cd-label">секунд</span></div>
+    </div>
+  </section>
+
+  <!-- ░░ LETTER ░░ -->
+  <main id="main-content">
+  <section class="letter reveal" aria-label="Письмо гостям">
+    <div class="container narrow">
+      <p class="letter__text">
+        Дорогие родные и друзья!<br /><br />
+        Мы счастливы сообщить вам, что наступил тот самый день — мы создаём семью. Для нас важно разделить этот момент с самыми близкими и любимыми людьми. Приглашаем вас разделить с нами радость этого торжества!
+      </p>
+      <div class="letter__sig">С любовью, Юлия и Роман</div>
+    </div>
+  </section>
+  <div class="fl-transition" aria-hidden="true"></div>
+
+  <!-- ░░ GALLERY ░░ -->
+  <section class="gallery reveal" id="program" aria-label="Фотогалерея">
+    <div class="section-head">
+      <p class="eyebrow">наши моменты</p>
+      <h2>Мы вместе</h2>
+    </div>
+    <div class="gallery__grid">
+      <div class="polaroid reveal-left delay-1">
+        <div class="polaroid__img">
+          <img src="photo_2026-06-03_09-03-48.jpg" alt="Юлия и Роман" onerror="this.parentElement.classList.add('no-img')" />
+          <div class="polaroid__placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M21 15l-5-5L5 21" stroke="#C07068" stroke-width="1.2" stroke-linecap="round"/><circle cx="8.5" cy="8.5" r="1.5" fill="#C07068"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="#C07068" stroke-width="1.2"/></svg></div>
+        </div>
+        <p class="polaroid__caption">Юлия &amp; Роман</p>
+      </div>
+      <div class="polaroid reveal-up delay-1">
+        <div class="polaroid__img">
+          <img src="photo2.jpg" alt="Фото 2" onerror="this.parentElement.classList.add('no-img')" />
+          <div class="polaroid__placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M21 15l-5-5L5 21" stroke="#C07068" stroke-width="1.2" stroke-linecap="round"/><circle cx="8.5" cy="8.5" r="1.5" fill="#C07068"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="#C07068" stroke-width="1.2"/></svg></div>
+        </div>
+        <p class="polaroid__caption">вместе навсегда</p>
+      </div>
+      <div class="polaroid reveal-right delay-2">
+        <div class="polaroid__img">
+          <img src="photo3.jpg" alt="Фото 3" onerror="this.parentElement.classList.add('no-img')" />
+          <div class="polaroid__placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M21 15l-5-5L5 21" stroke="#C07068" stroke-width="1.2" stroke-linecap="round"/><circle cx="8.5" cy="8.5" r="1.5" fill="#C07068"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="#C07068" stroke-width="1.2"/></svg></div>
+        </div>
+        <p class="polaroid__caption">25.07.2026</p>
+      </div>
+      <div class="polaroid reveal-left delay-2">
+        <div class="polaroid__img">
+          <img src="photo4.jpg" alt="Фото 4" onerror="this.parentElement.classList.add('no-img')" />
+          <div class="polaroid__placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M21 15l-5-5L5 21" stroke="#C07068" stroke-width="1.2" stroke-linecap="round"/><circle cx="8.5" cy="8.5" r="1.5" fill="#C07068"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="#C07068" stroke-width="1.2"/></svg></div>
+        </div>
+        <p class="polaroid__caption">наша история</p>
+      </div>
+      <div class="polaroid reveal-up delay-3">
+        <div class="polaroid__img">
+          <img src="photo5.jpg" alt="Фото 5" onerror="this.parentElement.classList.add('no-img')" />
+          <div class="polaroid__placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M21 15l-5-5L5 21" stroke="#C07068" stroke-width="1.2" stroke-linecap="round"/><circle cx="8.5" cy="8.5" r="1.5" fill="#C07068"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="#C07068" stroke-width="1.2"/></svg></div>
+        </div>
+        <p class="polaroid__caption">счастливые моменты</p>
+      </div>
+      <div class="polaroid reveal-right delay-3">
+        <div class="polaroid__img">
+          <img src="photo6.jpg" alt="Фото 6" onerror="this.parentElement.classList.add('no-img')" />
+          <div class="polaroid__placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M21 15l-5-5L5 21" stroke="#C07068" stroke-width="1.2" stroke-linecap="round"/><circle cx="8.5" cy="8.5" r="1.5" fill="#C07068"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="#C07068" stroke-width="1.2"/></svg></div>
+        </div>
+        <p class="polaroid__caption">с любовью</p>
+      </div>
+    </div>
+  </section>
+  <div class="fl-transition" aria-hidden="true"></div>
+
+  <!-- ░░ LOCATION ░░ -->
+  <section class="location reveal" aria-label="Место проведения">
+    <div class="location__bg"></div>
+    <div class="location__content container narrow">
+      <p class="eyebrow">где нас найти</p>
+      <h2>Место проведения</h2>
+      <div class="loc-card">
+        <div class="loc-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#C07068"/></svg>
+        </div>
+        <h3>Банкетный зал «Жара»</h3>
+        <p>Зелёная ул., 1К, посёлок Виноградово</p>
+        <a class="btn btn--outline" href="https://yandex.ru/maps/" target="_blank" rel="noopener">Посмотреть на карте</a>
+      </div>
+    </div>
+  </section>
+  <div class="fl-transition" aria-hidden="true"></div>
+
+  <!-- ░░ DRESS CODE ░░ -->
+  <section class="dresscode reveal" aria-label="Дресс-код">
+    <div class="container narrow">
+      <p class="eyebrow">стиль праздника</p>
+      <h2>Дресс-код</h2>
+      <p class="dresscode__text">
+        Мы будем рады, если вы поддержите цветовую гамму нашей свадьбы. Приветствуются любые оттенки этих цветов. Но главное — чтобы вам было уютно и красиво!
+      </p>
+      <div class="palette">
+        <div class="pal-swatch" style="background:#EDD9CF;" data-name="Пудровый"></div>
+        <div class="pal-swatch" style="background:#D99A8A;" data-name="Розовый"></div>
+        <div class="pal-swatch" style="background:#C07068;" data-name="Пыльная роза"></div>
+        <div class="pal-swatch" style="background:#D3B5A5;" data-name="Бежевый"></div>
+        <div class="pal-swatch" style="background:#7D5A46;" data-name="Какао"></div>
+      </div>
+      <div class="dresscode__grid">
+        <div class="dc-card">
+          <div class="dc-icon">♀</div>
+          <h3>Дамы</h3>
+          <p>Платья или наряды в цветах палитры</p>
+        </div>
+        <div class="dc-card">
+          <div class="dc-icon">♂</div>
+          <h3>Мужчины</h3>
+          <p>Костюм или рубашка в тёплых тонах</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <div class="fl-transition" aria-hidden="true"></div>
+
+  <!-- ░░ WISHES ░░ -->
+  <section class="wishes reveal" aria-label="Важные детали">
+    <div class="container narrow">
+      <p class="eyebrow">пожелания</p>
+      <h2>Важные детали</h2>
+      <div class="wishes__grid">
+        <div class="wish-card reveal-left">
+          <div class="wish-icon">🌸</div>
+          <h3>Цветы</h3>
+          <p>Мы знаем, что на свадьбах принято дарить цветы. Но если хотите порадовать нас иначе — вы знаете что делать!</p>
+        </div>
+        <div class="wish-card reveal-right">
+          <div class="wish-icon">🎁</div>
+          <h3>Подарки</h3>
+          <p>Самый ценный подарок — ваше присутствие. Если хотите сделать что-то особенное, вклад в бюджет молодой семьи будет очень кстати.</p>
+        </div>
+        <div class="wish-card reveal-right">
+          <div class="wish-icon">📸</div>
+          <h3>Фото и видео</h3>
+          <p>Снимайте всё что захотите и присылайте нам в общий чат — каждый момент бесценен!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="fl-transition" aria-hidden="true"></div>
+
+  <!-- ░░ RSVP ░░ -->
+  <section class="rsvp reveal" id="rsvp" aria-label="Анкета гостя">
+    <div class="rsvp__bg"></div>
+    <div class="container narrow rsvp__inner">
+      <p class="eyebrow">анкета</p>
+      <h2>Подтверждение</h2>
+      <p class="rsvp__sub">Пожалуйста, сообщите о своём присутствии до <strong>20 июля 2026</strong> — это поможет нам подготовиться к встрече с вами!</p>
+      <form class="rsvp-form" id="rsvpForm" novalidate aria-label="Анкета подтверждения участия">
+        <div class="form-group">
+          <label>ФИО</label>
+          <input type="text" name="name" placeholder="Иванова Анна Сергеевна" required />
+        </div>
+        <div class="form-group">
+          <label>Присутствие</label>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="attendance" value="yes" required /><span>Приду с удовольствием!</span></label>
+            <label class="radio-label"><input type="radio" name="attendance" value="no" /><span>Не смогу присутствовать</span></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Имя вашей пары (при наличии)</label>
+          <input type="text" name="partner" placeholder="Иванов Иван Иванович" />
+        </div>
+        <button type="submit" class="btn btn--primary">Отправить анкету</button>
+      </form>
+      <div class="rsvp-success" id="rsvpSuccess">
+        <div class="success-icon">🤍</div>
+        <h3>Спасибо!</h3>
+        <p>Мы получили ваш ответ и будем рады видеть вас на нашем торжестве!</p>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- ░░ FOOTER ░░ -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer__bg" aria-hidden="true"></div>
+    <div class="footer__heart">
+      <svg width="32" height="32" viewBox="0 0 24 24"><path d="M12 21C9 16 2 14 2 9c0-3.3 2.7-6 6-6 1.7 0 3.2.7 4 1.8C12.8 3.7 14.3 3 16 3c3.3 0 6 2.7 6 6 0 5-7 7-10 12z" fill="#C07068" opacity=".7"/></svg>
+    </div>
+    <p class="footer__names">Юлия &amp; Роман</p>
+    <p class="footer__date">25 · 07 · 2026</p>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
