@@ -19,7 +19,7 @@
   --ease:   cubic-bezier(.4,0,.2,1);
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
 /* Safe area для iPhone с вырезом/Dynamic Island */
 body {
@@ -31,7 +31,6 @@ body {
   font-family: var(--font-sans);
   background: var(--cream);
   color: var(--ink);
-  overflow-x: hidden;
 }
 
 /* ── Utility ─────────────────────────────────────── */
@@ -1214,6 +1213,8 @@ body { font-size: 1rem; line-height: 1.65; }
   transition: background .2s, color .2s;
   letter-spacing: .04em;
   white-space: nowrap;
+  pointer-events: auto;
+  z-index: 99999;
 }
 .a11y-btn:hover { background: var(--terra); color: #fff; }
 body.a11y .a11y-btn { background: var(--terra); color: #fff; }
