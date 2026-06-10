@@ -11,24 +11,18 @@ if (!$guest) { header('Location: /'); exit; }
 $guestName      = $guest['name'];
 $currentStatus  = $guest['rsvp']['status']  ?? null;
 $currentComment = $guest['rsvp']['comment'] ?? '';
+$currentZags    = $guest['rsvp']['zags']    ?? null;
 
 $html = file_get_contents(__DIR__ . '/index.html');
 
-// Replace RSVP section (found by id="rsvp") with personalized version
-$rsvpHtml = buildRsvpSection($guestName, $slug);
-$html = preg_replace(
-    '/<section[^>]+id="rsvp"[^>]*>.*?<\/section>/su',
-    $rsvpHtml,
-    $html
-);
-
-// Inject inline JS with guest state before </body>
-$html = str_replace('</body>', buildRsvpJs($slug, $currentStatus, $currentComment) . "\n</body>", $html);
+$rsvpHtml = buildRsvpSection($guestName);
+$html = preg_replace('/<section[^>]+id="rsvp"[^>]*>.*?<\/section>/su', $rsvpHtml, $html);
+$html = str_replace('</body>', buildRsvpJs($slug, $currentStatus, $currentComment, $currentZags) . "\n</body>", $html);
 
 echo $html;
 
 
-function buildRsvpSection(string $name, string $slug): string {
+function buildRsvpSection(string $name): string {
     $n = h($name);
     return <<<HTML
 <section class="rsvp reveal" id="rsvp" aria-label="Подтверждение присутствия">
@@ -39,11 +33,23 @@ function buildRsvpSection(string $name, string $slug): string {
       <p class="rsvp__sub">Дорогой(-ая) <strong>{$n}</strong>, пожалуйста, сообщите о своём присутствии до <strong>20 июля 2026</strong>.</p>
 
       <div id="rsvpInvite">
-        <div class="invite-btns" id="inviteBtns">
+
+        <!-- Шаг 1: приду / не приду -->
+        <div class="invite-btns" id="step1">
           <button class="btn btn--invite-yes" onclick="handleRsvp('attending')">&#129293;&nbsp;Буду присутствовать</button>
           <button class="btn btn--invite-no"  onclick="handleRsvp('not_attending')">Не смогу присутствовать</button>
         </div>
 
+        <!-- Шаг 2: будет ли на ЗАГСе (только если attending) -->
+        <div id="step2" style="display:none">
+          <p class="rsvp__sub" style="margin-bottom:1.2rem">Планируете ли вы присутствовать на церемонии в ЗАГСе?</p>
+          <div class="invite-btns">
+            <button class="btn btn--invite-yes" onclick="handleZags('yes')">Да, буду на ЗАГСе</button>
+            <button class="btn btn--invite-no"  onclick="handleZags('no')">Нет, только на банкете</button>
+          </div>
+        </div>
+
+        <!-- Комментарий (если не придёт) -->
         <div id="inviteComment" class="invite-comment" style="display:none">
           <textarea id="rsvpCommentText" placeholder="Комментарий (по желанию)…" rows="3" maxlength="500"></textarea>
           <div class="invite-comment-actions">
@@ -52,12 +58,14 @@ function buildRsvpSection(string $name, string $slug): string {
           </div>
         </div>
 
+        <!-- Подтверждение -->
         <div id="rsvpDone" class="rsvp-success" style="display:none">
           <div class="success-icon" id="doneIcon">&#129293;</div>
           <h3 id="doneTitle"></h3>
           <p id="doneText"></p>
           <button class="btn btn--outline btn--sm" onclick="changeAnswer()" style="margin-top:1.2rem">Изменить ответ</button>
         </div>
+
       </div>
     </div>
   </section>
@@ -65,19 +73,23 @@ HTML;
 }
 
 
-function buildRsvpJs(string $slug, ?string $status, string $comment): string {
-    $sj = json_encode($slug,   JSON_UNESCAPED_UNICODE);
+function buildRsvpJs(string $slug, ?string $status, string $comment, ?string $zags): string {
+    $sj  = json_encode($slug,    JSON_UNESCAPED_UNICODE);
     $stj = json_encode($status,  JSON_UNESCAPED_UNICODE);
-    $cj = json_encode($comment, JSON_UNESCAPED_UNICODE);
+    $cj  = json_encode($comment, JSON_UNESCAPED_UNICODE);
+    $zj  = json_encode($zags,    JSON_UNESCAPED_UNICODE);
     return <<<JS
 <script>
 (function () {
   var SLUG    = {$sj};
   var initSt  = {$stj};
   var initCmt = {$cj};
+  var initZags = {$zj};
+  var pendingStatus = null;
 
-  function showDone(status, comment) {
-    document.getElementById('inviteBtns').style.display    = 'none';
+  function showDone(status, comment, zags) {
+    document.getElementById('step1').style.display         = 'none';
+    document.getElementById('step2').style.display         = 'none';
     document.getElementById('inviteComment').style.display = 'none';
     var box   = document.getElementById('rsvpDone');
     var icon  = document.getElementById('doneIcon');
@@ -87,7 +99,8 @@ function buildRsvpJs(string $slug, ?string $status, string $comment): string {
     if (status === 'attending') {
       icon.textContent  = '🤍';
       title.textContent = 'Спасибо! Ждём вас!';
-      text.textContent  = 'Вы подтвердили своё присутствие. Будем рады видеть вас!';
+      var zagsNote = zags === 'yes' ? ' Вы также будете на церемонии в ЗАГСе.' : (zags === 'no' ? ' Ждём вас на банкете!' : '');
+      text.textContent  = 'Вы подтвердили своё присутствие.' + zagsNote;
     } else {
       icon.textContent  = '🙏';
       title.textContent = 'Спасибо за ответ';
@@ -98,45 +111,51 @@ function buildRsvpJs(string $slug, ?string $status, string $comment): string {
   }
 
   window.handleRsvp = function (status) {
-    if (status === 'not_attending') {
-      var box = document.getElementById('inviteComment');
-      box.dataset.pending                                    = status;
-      box.style.display                                      = 'block';
-      document.getElementById('inviteBtns').style.display   = 'none';
+    pendingStatus = status;
+    if (status === 'attending') {
+      document.getElementById('step1').style.display = 'none';
+      document.getElementById('step2').style.display = 'block';
     } else {
-      save(status, '');
+      document.getElementById('step1').style.display         = 'none';
+      document.getElementById('inviteComment').style.display = 'block';
     }
   };
 
+  window.handleZags = function (zags) {
+    save('attending', '', zags);
+  };
+
   window.submitRsvp = function () {
-    var status  = document.getElementById('inviteComment').dataset.pending;
     var comment = document.getElementById('rsvpCommentText').value.trim();
-    save(status, comment);
+    save('not_attending', comment, null);
   };
 
   window.cancelComment = function () {
     document.getElementById('inviteComment').style.display = 'none';
-    document.getElementById('inviteBtns').style.display    = 'flex';
+    document.getElementById('step1').style.display         = 'flex';
+    pendingStatus = null;
   };
 
   window.changeAnswer = function () {
-    document.getElementById('rsvpDone').style.display      = 'none';
-    document.getElementById('inviteBtns').style.display    = 'flex';
+    document.getElementById('rsvpDone').style.display  = 'none';
+    document.getElementById('step1').style.display     = 'flex';
+    document.getElementById('step2').style.display     = 'none';
     document.getElementById('inviteComment').style.display = 'none';
+    pendingStatus = null;
   };
 
-  function save(status, comment) {
+  function save(status, comment, zags) {
     fetch('/rsvp.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ guest: SLUG, status: status, comment: comment }),
+      body: JSON.stringify({ guest: SLUG, status: status, comment: comment, zags: zags }),
     })
       .then(function (r) { return r.json(); })
-      .then(function (d) { if (d.ok) showDone(status, comment); })
+      .then(function (d) { if (d.ok) showDone(status, comment, zags); })
       .catch(function () {});
   }
 
-  if (initSt) showDone(initSt, initCmt);
+  if (initSt) showDone(initSt, initCmt, initZags);
 })();
 </script>
 JS;
