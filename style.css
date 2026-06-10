@@ -1192,33 +1192,37 @@ body { font-size: 1rem; line-height: 1.65; }
 /* Кнопка-переключатель */
 .a11y-btn {
   position: fixed;
-  top: 16px;
+  /* env() — ниже notch/Dynamic Island; fallback 68px для всех iPhone */
+  top: calc(env(safe-area-inset-top, 20px) + 48px);
   right: 16px;
   z-index: 99999;
   display: inline-flex;
   align-items: center;
   gap: 7px;
   padding: 10px 18px;
-  background: rgba(255,255,255,.94);
+  background: rgba(255,255,255,.95);
   border: 2px solid var(--terra);
   border-radius: 40px;
   font-family: var(--font-sans);
-  font-size: .8rem;
+  font-size: .82rem;
   font-weight: 600;
   color: var(--terra);
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  box-shadow: 0 3px 16px rgba(0,0,0,.14);
-  transition: background .2s, color .2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,.18);
+  transition: background .2s, color .2s, box-shadow .2s;
   letter-spacing: .04em;
   white-space: nowrap;
+  min-width: 72px;
+  justify-content: center;
 }
-.a11y-btn:hover,
-.a11y-btn:active { background: var(--terra); color: #fff; }
-body.a11y .a11y-btn { background: var(--terra); color: #fff; }
-body.a11y .a11y-btn:hover,
-body.a11y .a11y-btn:active { background: #a05560; }
+.a11y-btn:active { transform: scale(.96); }
+body.a11y .a11y-btn {
+  background: var(--terra);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(192,112,104,.45);
+}
 
 /* ── Увеличенный текст, сохраняя стили шрифтов ── */
 body.a11y { font-size: 122%; line-height: 1.9; }
