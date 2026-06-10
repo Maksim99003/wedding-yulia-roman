@@ -16,7 +16,7 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          server-dir: /www/weddingyuliaandroman.ru/
+          server-dir: www/weddingyuliaandroman.ru/
           exclude: |
             **/.git*
             **/.git*/**
