@@ -50,15 +50,14 @@ if ($isAuth) {
         }
     }
 
-    $n = 0;
     foreach ($guests as $g) {
-        $n++;
-        $st = $g['rsvp']['status'] ?? null;
-        $stats['total']++;
-        if ($st === 'attending')      $stats['yes']++;
-        elseif ($st === 'not_attending') $stats['no']++;
-        else                          $stats['wait']++;
-        if (($g['rsvp']['zags'] ?? null) === 'yes') $stats['zags']++;
+        $cnt = !empty($g['members']) ? count($g['members']) : 1;
+        $st  = $g['rsvp']['status'] ?? null;
+        $stats['total'] += $cnt;
+        if ($st === 'attending')         $stats['yes']  += $cnt;
+        elseif ($st === 'not_attending') $stats['no']   += $cnt;
+        else                             $stats['wait'] += $cnt;
+        if (($g['rsvp']['zags'] ?? null) === 'yes') $stats['zags'] += $cnt;
     }
 }
 ?>
@@ -280,10 +279,19 @@ tbody tr:last-child td{border-bottom:none}
         $zags     = $g['rsvp']['zags']    ?? null;
         $cmt      = $g['rsvp']['comment'] ?? '';
         $url      = SITE_URL . '/invite_' . $slug;
+        $pl       = !empty($g['members']) && count($g['members']) > 1; // plural
         $badgeCls = $st === 'attending' ? 'badge-yes' : ($st === 'not_attending' ? 'badge-no' : 'badge-wait');
-        $badgeTxt = $st === 'attending' ? 'Придут'    : ($st === 'not_attending' ? 'Не придут' : 'Ожидает');
+        $badgeTxt = $st === 'attending'
+            ? ($pl ? 'Придут'    : 'Придёт')
+            : ($st === 'not_attending'
+                ? ($pl ? 'Не придут' : 'Не придёт')
+                : ($pl ? 'Ожидают'   : 'Ожидает'));
         $zagsCls  = $zags === 'yes' ? 'badge-zags-yes' : ($zags === 'no' ? 'badge-zags-no' : 'badge-zags-na');
-        $zagsTxt  = $zags === 'yes' ? 'Будут'          : ($zags === 'no' ? 'Не будут'       : '—');
+        $zagsTxt  = $zags === 'yes'
+            ? ($pl ? 'Будут'    : 'Будет')
+            : ($zags === 'no'
+                ? ($pl ? 'Не будут' : 'Не будет')
+                : '—');
         if ($st === 'not_attending') { $zagsCls = 'badge-zags-na'; $zagsTxt = '—'; }
         $displayNames = guestDisplayNames($g);
         $primaryName  = $displayNames[0];
