@@ -976,23 +976,22 @@ textarea { resize: vertical; min-height: 100px; }
 /* ══════════════════════════════════════════════════
    RESPONSIVE — small phones (≤ 390px)
    ══════════════════════════════════════════════════ */
-/* Palette: always one row on mobile, labels fit within swatch width */
+/* Palette mobile: small swatches, big row-gap so labels don't overlap next row */
 @media (max-width: 640px) {
   .palette {
-    flex-wrap: nowrap;
-    justify-content: center;
-    gap: 8px;
-    padding-bottom: 2.2rem;
-    margin-bottom: 2rem;
+    column-gap: 12px;
+    row-gap: 3.5rem;
+    padding-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
-  .pal-swatch { width: 44px; height: 44px; flex-shrink: 0; }
+  .pal-swatch { width: 44px; height: 44px; }
   .pal-swatch::after {
     white-space: normal;
-    width: 48px;
-    font-size: .58rem;
+    width: 50px;
+    font-size: .6rem;
     letter-spacing: .04em;
-    bottom: -2.2rem;
-    line-height: 1.25;
+    bottom: -2rem;
+    line-height: 1.3;
   }
 }
 
