@@ -1192,9 +1192,9 @@ body { font-size: 1rem; line-height: 1.65; }
 /* Кнопка-переключатель */
 .a11y-btn {
   position: fixed;
-  bottom: 24px;
-  left: 24px;
-  z-index: 9000;
+  top: 16px;
+  right: 16px;
+  z-index: 99999;
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -1207,34 +1207,38 @@ body { font-size: 1rem; line-height: 1.65; }
   font-weight: 600;
   color: var(--terra);
   cursor: pointer;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   box-shadow: 0 3px 16px rgba(0,0,0,.14);
   transition: background .2s, color .2s;
   letter-spacing: .04em;
   white-space: nowrap;
-  pointer-events: auto;
-  z-index: 99999;
 }
-.a11y-btn:hover { background: var(--terra); color: #fff; }
+.a11y-btn:hover,
+.a11y-btn:active { background: var(--terra); color: #fff; }
 body.a11y .a11y-btn { background: var(--terra); color: #fff; }
-body.a11y .a11y-btn:hover { background: #a05560; }
+body.a11y .a11y-btn:hover,
+body.a11y .a11y-btn:active { background: #a05560; }
 
 /* ── Увеличенный текст, сохраняя стили шрифтов ── */
-body.a11y { font-size: 120%; line-height: 1.85; }
+body.a11y { font-size: 122%; line-height: 1.9; }
 
 body.a11y h1, body.a11y h2, body.a11y h3,
-body.a11y h4, body.a11y h5 { font-weight: 600 !important; }
+body.a11y h4, body.a11y h5 { font-weight: 700 !important; }
 
 body.a11y p, body.a11y li, body.a11y address,
 body.a11y .letter__text, body.a11y .eyebrow,
 body.a11y .tl-time, body.a11y .tl-title, body.a11y .tl-note,
 body.a11y .dc-card p, body.a11y .wish-card p,
-body.a11y .info-val, body.a11y .info-lbl { font-weight: 500 !important; }
+body.a11y .info-val, body.a11y .info-lbl { font-weight: 600 !important; }
 
-body.a11y .hero__names { font-size: clamp(3rem, 12vw, 5rem) !important; }
-body.a11y h2            { font-size: clamp(2.2rem, 7vw, 3.6rem) !important; }
-body.a11y h3            { font-size: 1.4rem !important; }
-body.a11y p             { font-size: 1.15rem !important; }
-body.a11y .letter__text { font-size: clamp(1.2rem, 4vw, 1.6rem) !important; }
-body.a11y .eyebrow      { font-size: .9rem !important; font-weight: 700 !important; }
+body.a11y .hero__names { font-size: clamp(3.2rem, 14vw, 5.5rem) !important; }
+body.a11y h2            { font-size: clamp(2.4rem, 8vw, 4rem) !important; }
+body.a11y h3            { font-size: 1.6rem !important; }
+body.a11y p             { font-size: 1.2rem !important; }
+body.a11y .letter__text { font-size: clamp(1.3rem, 4.5vw, 1.8rem) !important; }
+body.a11y .eyebrow      { font-size: .95rem !important; font-weight: 700 !important; }
+body.a11y .tl-time      { font-size: 1.05rem !important; }
+body.a11y .tl-title     { font-size: 1.3rem !important; }
+body.a11y .info-val     { font-size: 1.15rem !important; }
+body.a11y .btn          { font-size: 1rem !important; padding: 18px 36px !important; }
