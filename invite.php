@@ -44,7 +44,7 @@ function buildRsvpSection(string $name): string {
         <div id="step2" style="display:none">
           <p class="rsvp__sub" style="margin-bottom:1.2rem">Планируете ли вы присутствовать на церемонии в ЗАГСе?</p>
           <div class="invite-btns">
-            <button class="btn btn--invite-yes" onclick="handleZags('yes')">Да, буду на ЗАГСе</button>
+            <button class="btn btn--invite-yes" onclick="handleZags('yes')">Да, буду в ЗАГСе</button>
             <button class="btn btn--invite-no"  onclick="handleZags('no')">Нет, только на банкете</button>
           </div>
         </div>

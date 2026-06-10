@@ -195,7 +195,7 @@ tbody tr:last-child td{border-bottom:none}
     <span class="chip chip--yes">Придут&nbsp;<b><?= $stats['yes'] ?></b></span>
     <span class="chip chip--no">Не придут&nbsp;<b><?= $stats['no'] ?></b></span>
     <span class="chip chip--wait">Ожидают&nbsp;<b><?= $stats['wait'] ?></b></span>
-    <span class="chip chip--zags">На ЗАГС&nbsp;<b><?= $stats['zags'] ?></b></span>
+    <span class="chip chip--zags">В ЗАГС&nbsp;<b><?= $stats['zags'] ?></b></span>
   </div>
 </div>
 
