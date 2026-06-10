@@ -976,17 +976,29 @@ textarea { resize: vertical; min-height: 100px; }
 /* ══════════════════════════════════════════════════
    RESPONSIVE — small phones (≤ 390px)
    ══════════════════════════════════════════════════ */
-/* Palette: fit all 5 swatches in one row on phones, fix row overlap */
+/* Palette: always one row on mobile, labels fit within swatch width */
 @media (max-width: 640px) {
-  .pal-swatch { width: 52px; height: 52px; }
-  .palette { column-gap: 14px; row-gap: 2.8rem; }
+  .palette {
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 8px;
+    padding-bottom: 2.2rem;
+    margin-bottom: 2rem;
+  }
+  .pal-swatch { width: 44px; height: 44px; flex-shrink: 0; }
+  .pal-swatch::after {
+    white-space: normal;
+    width: 48px;
+    font-size: .58rem;
+    letter-spacing: .04em;
+    bottom: -2.2rem;
+    line-height: 1.25;
+  }
 }
 
 @media (max-width: 390px) {
   .hero__names { font-size: clamp(2.6rem, 14vw, 3.8rem); }
   .polaroid { padding: 6px 6px 26px; }
-  .pal-swatch { width: 44px; height: 44px; }
-  .palette { column-gap: 10px; row-gap: 2.8rem; }
   .dc-card, .wish-card { padding: 1.2rem; }
 }
 
