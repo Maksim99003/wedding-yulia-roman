@@ -178,11 +178,81 @@ tbody tr:last-child td{border-bottom:none}
 .fbtn.active-wait{background:#7a5f1a;border-color:#7a5f1a;color:#fff}
 .fbtn.active-zyes{background:#1a3a6e;border-color:#1a3a6e;color:#fff}
 
-@media(max-width:700px){
-  .hdr{padding:0 16px} .body-wrap{padding:16px}
-  .stats-inner{padding:10px 0}
-  th:nth-child(5),td:nth-child(5){display:none}
-  .link-txt{max-width:100px}
+@media(max-width:640px){
+  html,body{overflow-x:hidden}
+
+  /* ── Header ── */
+  .hdr{padding:0 16px}
+  .hdr-inner{flex-direction:column;gap:10px;padding:14px 0;align-items:stretch}
+  .hdr-title p{display:none}
+  .hdr-actions{display:flex;gap:8px;width:100%}
+  .hdr-btn{padding:11px 16px;font-size:.84rem;min-width:0}
+  .hdr-btn--add{flex:1;text-align:center;justify-content:center}
+
+  /* ── Stats ── */
+  .stats-bar{padding:0 16px}
+  .stats-inner{gap:6px;padding:10px 0}
+  .chip{font-size:.74rem;padding:5px 10px}
+  .chip b{font-size:.88rem}
+
+  /* ── Body ── */
+  .body-wrap{padding:12px 16px}
+
+  /* ── Add panel ── */
+  .add-panel{padding:1rem}
+  .member-row{flex-wrap:wrap;gap:8px}
+  .member-row input{min-width:0;flex:1 1 calc(50% - 4px)}
+  .gender-select{flex:0 0 68px}
+  .remove-btn{flex:0 0 auto}
+  .form-footer{flex-direction:column;gap:8px}
+  .add-member-btn{width:100%;padding:11px;text-align:center}
+  .btn-add{width:100%;padding:12px;font-size:.9rem}
+
+  /* ── Table top ── */
+  .tbl-top{flex-direction:column;align-items:flex-start;gap:8px;padding:12px 16px}
+  .tbl-top>div{width:100%;display:flex;justify-content:space-between;align-items:center}
+
+  /* ── Filter bar ── */
+  .filter-bar{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding:10px 16px;gap:10px}
+  .filter-bar::-webkit-scrollbar{display:none}
+  .filter-group{flex-wrap:nowrap;flex-shrink:0}
+  .fbtn{padding:7px 12px;font-size:.78rem;min-height:36px}
+
+  /* ── TABLE → CARDS ── */
+  /* Make table a normal block so width:100% works properly */
+  table{display:block;width:100%}
+  table thead{display:none}
+  table tbody{display:block;width:100%}
+
+  table tbody tr{
+    display:grid;
+    grid-template-columns:1fr auto;
+    grid-template-rows:auto auto auto;
+    padding:14px 16px;
+    border-bottom:1px solid #f0ebe8;
+    background:#fff !important;
+    width:100%;
+    box-sizing:border-box;
+  }
+  table tbody tr:hover{background:#faf7f4 !important}
+  table tbody tr td{display:block;padding:0;border:none;min-width:0}
+
+  /* Cell placement: td-num=child1, td-name=child2, status=3, zags=4, link=5, delete=6 */
+  table tbody td.td-num              {display:none}
+  table tbody td.td-name             {grid-column:1/-1;grid-row:1;padding-bottom:8px;font-size:.95rem}
+  table tbody tr>td:nth-child(3)     {grid-column:1;grid-row:2;padding-bottom:10px;align-self:center}
+  table tbody tr>td:nth-child(4)     {grid-column:2;grid-row:2;padding-bottom:10px;display:flex;justify-content:flex-end;align-self:center}
+  table tbody tr>td:nth-child(5)     {grid-column:1;grid-row:3;display:flex;align-items:center;min-width:0}
+  table tbody tr>td:nth-child(6)     {grid-column:2;grid-row:3;display:flex;align-items:center;justify-content:flex-end}
+
+  .link-txt{display:none}
+  .link-wrap{min-width:0}
+  .copy-btn{padding:9px 16px;font-size:.82rem;border-radius:6px;min-height:38px;white-space:nowrap}
+  .del-btn {padding:9px 14px;font-size:.82rem;border-radius:6px;min-height:38px;white-space:nowrap}
+
+  /* Empty row */
+  table tbody tr.empty-row{display:block}
+  table tbody tr.empty-row td{display:block !important;padding:2.5rem 1rem !important;text-align:center}
 }
 </style>
 </head>
@@ -397,7 +467,7 @@ function addMember() {
 function toggleAdd() {
   var p = document.getElementById('addPanel');
   p.classList.toggle('open');
-  if (p.classList.contains('open')) p.querySelector('input[name=name]').focus();
+  if (p.classList.contains('open')) { var fi = p.querySelector('input[type=text]'); if (fi) fi.focus(); }
 }
 function copyLink(btn, url) {
   function done() {
