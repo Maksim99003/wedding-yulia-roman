@@ -189,13 +189,11 @@ tr:not(:last-child) td{border-bottom:1px solid #f7f3f1}
     <h3>Создать приглашение</h3>
     <form method="post">
       <input type="hidden" name="action" value="add">
-      <div class="add-row">
-        <div class="field">
-          <label>Имя гостя</label>
-          <input type="text" name="name" placeholder="Например: Анна или Семья Ивановых" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Создать ссылку</button>
+      <div class="field" style="margin-bottom:1rem">
+        <label>Имя гостя</label>
+        <input type="text" name="name" placeholder="Например: Анна или Семья Ивановых" required>
       </div>
+      <button type="submit" class="btn btn-primary">Создать ссылку</button>
     </form>
     <?php if ($success): ?>
     <div class="success" style="margin-top:1rem">
