@@ -17,10 +17,75 @@ $html = file_get_contents(__DIR__ . '/index.html');
 
 $rsvpHtml = buildRsvpSection($guestName);
 $html = preg_replace('/<section[^>]+id="rsvp"[^>]*>.*?<\/section>/su', $rsvpHtml, $html);
+$html = str_replace('</head>', buildInviteStyles() . "\n</head>", $html);
 $html = str_replace('</body>', buildRsvpJs($slug, $currentStatus, $currentComment, $currentZags) . "\n</body>", $html);
 
 echo $html;
 
+
+function buildInviteStyles(): string {
+    return <<<CSS
+<style>
+/* ── Invite page overrides ── */
+.rsvp__sub--invite {
+  font-size: 1.15rem !important;
+  line-height: 1.75 !important;
+  color: var(--mid);
+  margin-bottom: 0 !important;
+}
+.invite-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2.2rem 2rem;
+  margin: 1.8rem auto 0;
+  max-width: 500px;
+  box-shadow: 0 4px 12px rgba(90,40,30,.06), 0 16px 40px rgba(90,40,30,.10);
+  border: 1px solid rgba(192,112,104,.18);
+}
+.invite-btns {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+.btn.btn--invite-yes {
+  background: #C07068 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 17px 28px !important;
+  font-size: .95rem !important;
+  letter-spacing: .1em;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(192,112,104,.4) !important;
+  transform: none;
+  transition: background .2s, box-shadow .2s, transform .2s !important;
+}
+.btn.btn--invite-yes:hover {
+  background: #a05560 !important;
+  box-shadow: 0 6px 20px rgba(192,112,104,.45) !important;
+  transform: translateY(-2px) !important;
+}
+.btn.btn--invite-no {
+  background: transparent !important;
+  color: #9e7d72 !important;
+  border: 1.5px solid #ddd !important;
+  border-radius: 10px !important;
+  padding: 14px 28px !important;
+  font-size: .85rem !important;
+  letter-spacing: .08em;
+  justify-content: center;
+  box-shadow: none !important;
+  transition: border-color .2s, color .2s !important;
+}
+.btn.btn--invite-no:hover {
+  border-color: #9e7d72 !important;
+  color: #7D5A46 !important;
+  transform: none !important;
+}
+#rsvpDone { flex-direction: column; align-items: center; gap: .8rem; animation: fadeIn .5s ease; }
+</style>
+CSS;
+}
 
 function buildRsvpSection(string $name): string {
     $n = h($name);
