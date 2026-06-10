@@ -1192,8 +1192,8 @@ body { font-size: 1rem; line-height: 1.65; }
 /* Кнопка-переключатель */
 .a11y-btn {
   position: fixed;
-  /* выше home indicator на iPhone */
-  bottom: max(24px, calc(env(safe-area-inset-bottom, 0px) + 16px));
+  /* ниже notch/Dynamic Island на iPhone */
+  top: max(16px, calc(env(safe-area-inset-top, 0px) + 12px));
   right: 16px;
   z-index: 99999;
   display: inline-flex;
