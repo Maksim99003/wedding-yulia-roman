@@ -976,10 +976,17 @@ textarea { resize: vertical; min-height: 100px; }
 /* ══════════════════════════════════════════════════
    RESPONSIVE — small phones (≤ 390px)
    ══════════════════════════════════════════════════ */
+/* Palette: fit all 5 swatches in one row on phones, fix row overlap */
+@media (max-width: 640px) {
+  .pal-swatch { width: 52px; height: 52px; }
+  .palette { column-gap: 14px; row-gap: 2.8rem; }
+}
+
 @media (max-width: 390px) {
   .hero__names { font-size: clamp(2.6rem, 14vw, 3.8rem); }
   .polaroid { padding: 6px 6px 26px; }
   .pal-swatch { width: 44px; height: 44px; }
+  .palette { column-gap: 10px; row-gap: 2.8rem; }
   .dc-card, .wish-card { padding: 1.2rem; }
 }
 
