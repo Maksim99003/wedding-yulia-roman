@@ -4,7 +4,9 @@ require_once __DIR__ . '/config.php';
 
 if (isset($_GET['logout'])) { session_destroy(); header('Location: admin.php'); exit; }
 
-$error = $success = '';
+$error   = '';
+$success = $_SESSION['flash'] ?? '';
+unset($_SESSION['flash']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
     if ($_POST['password'] === ADMIN_PASS) { $_SESSION['admin_auth'] = true; header('Location: admin.php'); exit; }
@@ -27,8 +29,9 @@ if ($isAuth) {
                 while (isset($guests[$slug])) $slug = $base . '_' . $i++;
                 $guests[$slug] = ['name'=>$name,'slug'=>$slug,'created_at'=>date('Y-m-d\TH:i:s'),'rsvp'=>null];
                 save_guests($guests);
-                $success = SITE_URL . '/invite_' . $slug;
+                $_SESSION['flash'] = SITE_URL . '/invite_' . $slug;
             }
+            header('Location: admin.php'); exit;
         }
         if ($action === 'delete') {
             $slug = preg_replace('/[^a-z0-9_-]/', '', $_POST['slug'] ?? '');
