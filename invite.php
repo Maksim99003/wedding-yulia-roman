@@ -30,42 +30,45 @@ function buildRsvpSection(string $name): string {
     <div class="container narrow rsvp__inner">
       <p class="eyebrow">ваш ответ</p>
       <h2>Подтверждение</h2>
-      <p class="rsvp__sub">Дорогой(-ая) <strong>{$n}</strong>, пожалуйста, сообщите о своём присутствии до <strong>20 июля 2026</strong>.</p>
+      <p class="rsvp__sub rsvp__sub--invite">Дорогой(-ая) <strong>{$n}</strong>, пожалуйста, сообщите о своём присутствии до <strong>20 июля 2026</strong>.</p>
 
       <div id="rsvpInvite">
+        <div class="invite-card">
 
-        <!-- Шаг 1: приду / не приду -->
-        <div class="invite-btns" id="step1">
-          <button class="btn btn--invite-yes" onclick="handleRsvp('attending')">&#129293;&nbsp;Буду присутствовать</button>
-          <button class="btn btn--invite-no"  onclick="handleRsvp('not_attending')">Не смогу присутствовать</button>
-        </div>
-
-        <!-- Шаг 2: будет ли на ЗАГСе (только если attending) -->
-        <div id="step2" style="display:none">
-          <p class="rsvp__sub" style="margin-bottom:1.2rem">Планируете ли вы присутствовать на церемонии в ЗАГСе?</p>
-          <div class="invite-btns">
-            <button class="btn btn--invite-yes" onclick="handleZags('yes')">Да, буду в ЗАГСе</button>
-            <button class="btn btn--invite-no"  onclick="handleZags('no')">Нет, только на банкете</button>
+          <!-- Шаг 1: приду / не приду -->
+          <div class="invite-btns" id="step1">
+            <button class="btn btn--invite-yes" onclick="handleRsvp('attending')">&#129293;&nbsp;&nbsp;Буду присутствовать</button>
+            <button class="btn btn--invite-no"  onclick="handleRsvp('not_attending')">Не смогу присутствовать</button>
           </div>
-        </div>
 
-        <!-- Комментарий (если не придёт) -->
-        <div id="inviteComment" class="invite-comment" style="display:none">
-          <textarea id="rsvpCommentText" placeholder="Комментарий (по желанию)…" rows="3" maxlength="500"></textarea>
-          <div class="invite-comment-actions">
-            <button class="btn btn--primary" onclick="submitRsvp()">Сохранить</button>
-            <button class="btn btn--outline"  onclick="cancelComment()">Отмена</button>
+          <!-- Шаг 2: будет ли в ЗАГСе (только если attending) -->
+          <div id="step2" style="display:none">
+            <p style="font-size:1rem;color:var(--mid);margin-bottom:1.4rem;line-height:1.6">Планируете ли вы присутствовать на церемонии в ЗАГСе?</p>
+            <div class="invite-btns">
+              <button class="btn btn--invite-yes" onclick="handleZags('yes')">Да, буду в ЗАГСе</button>
+              <button class="btn btn--invite-no"  onclick="handleZags('no')">Нет, только на банкете</button>
+            </div>
           </div>
-        </div>
 
-        <!-- Подтверждение -->
-        <div id="rsvpDone" class="rsvp-success" style="display:none">
-          <div class="success-icon" id="doneIcon">&#129293;</div>
-          <h3 id="doneTitle"></h3>
-          <p id="doneText"></p>
-          <button class="btn btn--outline btn--sm" onclick="changeAnswer()" style="margin-top:1.2rem">Изменить ответ</button>
-        </div>
+          <!-- Комментарий (если не придёт) -->
+          <div id="inviteComment" class="invite-comment" style="display:none">
+            <p style="font-size:.95rem;color:var(--mid);margin-bottom:.8rem">Хотите оставить комментарий?</p>
+            <textarea id="rsvpCommentText" placeholder="Комментарий (по желанию)…" rows="3" maxlength="500"></textarea>
+            <div class="invite-comment-actions">
+              <button class="btn btn--primary" onclick="submitRsvp()">Сохранить</button>
+              <button class="btn btn--outline"  onclick="cancelComment()">Отмена</button>
+            </div>
+          </div>
 
+          <!-- Подтверждение -->
+          <div id="rsvpDone" class="rsvp-success" style="display:none">
+            <div class="success-icon" id="doneIcon">&#129293;</div>
+            <h3 id="doneTitle"></h3>
+            <p id="doneText"></p>
+            <button class="btn btn--outline btn--sm" onclick="changeAnswer()" style="margin-top:1.2rem">Изменить ответ</button>
+          </div>
+
+        </div>
       </div>
     </div>
   </section>

@@ -813,30 +813,74 @@ textarea { resize: vertical; min-height: 100px; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 
 /* ── Invite RSVP (персональные ссылки) ─────────── */
+
+/* Карточка-контейнер */
+.invite-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 8px 40px rgba(90,40,30,.10);
+  margin-top: 1.5rem;
+  max-width: 520px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Текст приветствия крупнее */
+.rsvp__sub--invite {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--mid);
+  margin-bottom: 2rem;
+}
+
 .invite-btns {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 14px;
+  align-items: stretch;
+  gap: 12px;
 }
+
+/* Главная кнопка — яркая заливка */
 .btn--invite-yes {
-  background: var(--terra);
-  color: #fff;
-  border: 2px solid var(--terra);
-  padding: 16px 40px;
-  font-size: .9rem;
+  background: var(--terra) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 18px 32px !important;
+  font-size: 1rem !important;
+  letter-spacing: .08em;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(192,112,104,.35);
+  transition: background .2s, transform .2s, box-shadow .2s;
 }
-.btn--invite-yes:hover { background: var(--brown); border-color: var(--brown); transform: translateY(-2px); }
+.btn--invite-yes:hover {
+  background: var(--brown) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(125,90,70,.35);
+}
+
+/* Вторичная кнопка — тонкая рамка */
 .btn--invite-no {
-  background: transparent;
-  color: var(--cocoa);
-  border: 2px solid var(--cocoa);
-  padding: 16px 40px;
-  font-size: .9rem;
+  background: transparent !important;
+  color: var(--mid) !important;
+  border: 1.5px solid #ccc !important;
+  border-radius: 12px !important;
+  padding: 15px 32px !important;
+  font-size: .88rem !important;
+  letter-spacing: .07em;
+  justify-content: center;
+  transition: border-color .2s, color .2s;
 }
-.btn--invite-no:hover { background: var(--cocoa); color: #fff; transform: translateY(-2px); }
+.btn--invite-no:hover {
+  border-color: var(--cocoa) !important;
+  color: var(--cocoa) !important;
+  transform: none;
+}
+
 .invite-comment {
-  margin-top: 1.5rem;
+  margin-top: 1.2rem;
   width: 100%;
 }
 .invite-comment textarea {
@@ -864,6 +908,11 @@ textarea { resize: vertical; min-height: 100px; }
   animation: fadeIn .5s ease;
 }
 .btn--sm { padding: 9px 20px; font-size: .8rem; }
+
+@media (max-width: 480px) {
+  .invite-card { padding: 1.8rem 1.2rem; border-radius: 14px; }
+  .rsvp__sub--invite { font-size: 1rem; }
+}
 
 /* ══════════════════════════════════════════════════
    FOOTER
