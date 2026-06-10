@@ -34,3 +34,40 @@ function slugify(string $name): string {
 function h(string $s): string {
     return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 }
+
+// Слаг: "Иван" + "Петров" → "ivanp"
+function makeSlug(string $first, string $last): string {
+    $t = [
+        'а'=>'a','б'=>'b','в'=>'v','г'=>'g','д'=>'d','е'=>'e','ё'=>'yo','ж'=>'zh','з'=>'z',
+        'и'=>'i','й'=>'y','к'=>'k','л'=>'l','м'=>'m','н'=>'n','о'=>'o','п'=>'p','р'=>'r',
+        'с'=>'s','т'=>'t','у'=>'u','ф'=>'f','х'=>'h','ц'=>'ts','ч'=>'ch','ш'=>'sh',
+        'щ'=>'sch','ъ'=>'','ы'=>'y','ь'=>'','э'=>'e','ю'=>'yu','я'=>'ya',
+    ];
+    $fSlug = preg_replace('/[^a-z0-9]+/', '', strtr(mb_strtolower(trim($first),'UTF-8'), $t));
+    $lInit = '';
+    if (trim($last)) {
+        $lInit = preg_replace('/[^a-z0-9]+/', '', strtr(mb_substr(mb_strtolower(trim($last),'UTF-8'),0,1,'UTF-8'), $t));
+    }
+    return ($fSlug . $lInit) ?: 'guest';
+}
+
+// Массив полных имён ["Иван Петров", "Мария Петрова"]
+function guestDisplayNames(array $guest): array {
+    if (!empty($guest['members']) && is_array($guest['members'])) {
+        return array_map(fn($m) => trim(($m['first'] ?? '') . ' ' . ($m['last'] ?? '')), $guest['members']);
+    }
+    return [$guest['name'] ?? 'Гость'];
+}
+
+// Приветствие: "Дорогой(-ая) Иван" / "Дорогие Иван и Мария"
+function guestGreeting(array $guest): string {
+    if (!empty($guest['members']) && is_array($guest['members'])) {
+        $firsts = array_map(fn($m) => trim($m['first'] ?? ''), $guest['members']);
+    } else {
+        $firsts = [$guest['name'] ?? 'Гость'];
+    }
+    $firsts = array_filter($firsts);
+    if (count($firsts) === 1) return 'Дорогой(-ая) ' . reset($firsts);
+    $last = array_pop($firsts);
+    return 'Дорогие ' . implode(', ', $firsts) . ' и ' . $last;
+}

@@ -23,11 +23,17 @@ if ($isAuth) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $action = $_POST['action'] ?? '';
         if ($action === 'add') {
-            $name = trim($_POST['name'] ?? '');
-            if ($name) {
-                $slug = slugify($name); $base = $slug; $i = 2;
-                while (isset($guests[$slug])) $slug = $base . '_' . $i++;
-                $guests[$slug] = ['name'=>$name,'slug'=>$slug,'created_at'=>date('Y-m-d\TH:i:s'),'rsvp'=>null];
+            $firsts = array_map('trim', (array)($_POST['first'] ?? []));
+            $lasts  = array_map('trim', (array)($_POST['last']  ?? []));
+            $members = [];
+            for ($i = 0; $i < count($firsts); $i++) {
+                if ($firsts[$i]) $members[] = ['first' => $firsts[$i], 'last' => $lasts[$i] ?? ''];
+            }
+            if ($members) {
+                $slug = makeSlug($members[0]['first'], $members[0]['last']);
+                $base = $slug; $j = 2;
+                while (isset($guests[$slug])) $slug = $base . $j++;
+                $guests[$slug] = ['members' => $members, 'slug' => $slug, 'created_at' => date('Y-m-d\TH:i:s'), 'rsvp' => null];
                 save_guests($guests);
                 $_SESSION['flash'] = SITE_URL . '/invite_' . $slug;
             }
@@ -143,6 +149,18 @@ tbody tr:last-child td{border-bottom:none}
 .login-btn:hover{background:#a05560}
 .login-err{color:#c0392b;font-size:.85rem;margin-bottom:1rem}
 
+/* Member rows */
+.member-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.member-row input{flex:1;padding:10px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:.95rem;outline:none;transition:border-color .2s}
+.member-row input:focus{border-color:#C07068}
+.remove-btn{background:none;border:1px solid #e8c4c4;border-radius:6px;padding:7px 10px;cursor:pointer;color:#c0392b;font-size:.78rem;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.remove-btn:hover{background:#c0392b;color:#fff}
+.add-member-btn{background:none;border:1.5px dashed #C07068;border-radius:8px;padding:7px 16px;color:#C07068;font-size:.8rem;cursor:pointer;font-weight:600;transition:all .2s}
+.add-member-btn:hover{background:#fff5f4}
+.form-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px}
+.td-members{line-height:1.5}
+.td-members span{display:block;font-size:.82rem;color:#9e7d72;font-weight:400}
+
 @media(max-width:700px){
   .hdr{padding:0 16px} .body-wrap{padding:16px}
   .stats-inner{padding:10px 0}
@@ -209,8 +227,14 @@ tbody tr:last-child td{border-bottom:none}
     <h3>Новое приглашение</h3>
     <form method="post">
       <input type="hidden" name="action" value="add">
-      <div class="add-row">
-        <input type="text" name="name" placeholder="Имя гостя или семьи (напр. Анна или Семья Ивановых)" required>
+      <div id="membersList">
+        <div class="member-row">
+          <input type="text" name="first[]" placeholder="Имя" required>
+          <input type="text" name="last[]"  placeholder="Фамилия">
+        </div>
+      </div>
+      <div class="form-footer">
+        <button type="button" class="add-member-btn" onclick="addMember()">+ Добавить человека</button>
         <button type="submit" class="btn-add">Создать ссылку</button>
       </div>
     </form>
@@ -241,19 +265,26 @@ tbody tr:last-child td{border-bottom:none}
         <tr class="empty-row"><td colspan="6">Гостей пока нет. Нажмите «+ Добавить гостя».</td></tr>
       <?php else: $n = 0; foreach ($guests as $slug => $g):
         $n++;
-        $st      = $g['rsvp']['status'] ?? null;
-        $zags    = $g['rsvp']['zags']   ?? null;
-        $cmt     = $g['rsvp']['comment'] ?? '';
-        $url     = SITE_URL . '/invite_' . $slug;
-        $badgeCls  = $st === 'attending' ? 'badge-yes' : ($st === 'not_attending' ? 'badge-no' : 'badge-wait');
-        $badgeTxt  = $st === 'attending' ? 'Придёт'   : ($st === 'not_attending' ? 'Не придёт' : 'Ожидает');
-        $zagsCls   = $zags === 'yes' ? 'badge-zags-yes' : ($zags === 'no' ? 'badge-zags-no' : 'badge-zags-na');
-        $zagsTxt   = $zags === 'yes' ? 'Будет'         : ($zags === 'no' ? 'Не будет'       : '—');
+        $st       = $g['rsvp']['status']  ?? null;
+        $zags     = $g['rsvp']['zags']    ?? null;
+        $cmt      = $g['rsvp']['comment'] ?? '';
+        $url      = SITE_URL . '/invite_' . $slug;
+        $badgeCls = $st === 'attending' ? 'badge-yes' : ($st === 'not_attending' ? 'badge-no' : 'badge-wait');
+        $badgeTxt = $st === 'attending' ? 'Придут'    : ($st === 'not_attending' ? 'Не придут' : 'Ожидает');
+        $zagsCls  = $zags === 'yes' ? 'badge-zags-yes' : ($zags === 'no' ? 'badge-zags-no' : 'badge-zags-na');
+        $zagsTxt  = $zags === 'yes' ? 'Будут'          : ($zags === 'no' ? 'Не будут'       : '—');
         if ($st === 'not_attending') { $zagsCls = 'badge-zags-na'; $zagsTxt = '—'; }
+        $displayNames = guestDisplayNames($g);
+        $primaryName  = $displayNames[0];
       ?>
         <tr>
           <td class="td-num"><?= $n ?></td>
-          <td class="td-name"><?= h($g['name']) ?><?php if ($cmt): ?><br><span style="font-weight:400;color:#9e7d72;font-size:.78rem;font-style:italic"><?= h($cmt) ?></span><?php endif; ?></td>
+          <td class="td-name td-members">
+            <?php foreach ($displayNames as $dn): ?>
+              <span><?= h($dn) ?></span>
+            <?php endforeach; ?>
+            <?php if ($cmt): ?><span style="font-style:italic;color:#b09088"><?= h($cmt) ?></span><?php endif; ?>
+          </td>
           <td><span class="badge <?= $badgeCls ?>"><?= $badgeTxt ?></span></td>
           <td><span class="badge <?= $zagsCls ?>"><?= $zagsTxt ?></span></td>
           <td>
@@ -263,7 +294,7 @@ tbody tr:last-child td{border-bottom:none}
             </div>
           </td>
           <td>
-            <form method="post" onsubmit="return confirm('Удалить гостя «<?= h($g['name']) ?>»?')">
+            <form method="post" onsubmit="return confirm('Удалить приглашение «<?= h($primaryName) ?>»?')">
               <input type="hidden" name="action" value="delete">
               <input type="hidden" name="slug"   value="<?= h($slug) ?>">
               <button type="submit" class="del-btn">Удалить</button>
@@ -279,6 +310,16 @@ tbody tr:last-child td{border-bottom:none}
 <?php endif; ?>
 
 <script>
+function addMember() {
+  var list = document.getElementById('membersList');
+  var row  = document.createElement('div');
+  row.className = 'member-row';
+  row.innerHTML = '<input type="text" name="first[]" placeholder="Имя">'
+    + '<input type="text" name="last[]" placeholder="Фамилия">'
+    + '<button type="button" class="remove-btn" onclick="this.parentElement.remove()">Убрать</button>';
+  list.appendChild(row);
+  row.querySelector('input').focus();
+}
 function toggleAdd() {
   var p = document.getElementById('addPanel');
   p.classList.toggle('open');

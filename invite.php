@@ -8,14 +8,15 @@ $guests = load_guests();
 $guest  = $guests[$slug] ?? null;
 if (!$guest) { header('Location: /'); exit; }
 
-$guestName      = $guest['name'];
 $currentStatus  = $guest['rsvp']['status']  ?? null;
 $currentComment = $guest['rsvp']['comment'] ?? '';
 $currentZags    = $guest['rsvp']['zags']    ?? null;
+$greeting       = guestGreeting($guest);
+$displayNames   = guestDisplayNames($guest);
 
 $html = file_get_contents(__DIR__ . '/index.html');
 
-$rsvpHtml = buildRsvpSection($guestName);
+$rsvpHtml = buildRsvpSection($greeting, $displayNames);
 $html = preg_replace('/<section[^>]+id="rsvp"[^>]*>.*?<\/section>/su', $rsvpHtml, $html);
 $html = str_replace('</head>', buildInviteStyles() . "\n</head>", $html);
 $html = str_replace('</body>', buildRsvpJs($slug, $currentStatus, $currentComment, $currentZags) . "\n</body>", $html);
@@ -83,19 +84,29 @@ function buildInviteStyles(): string {
   transform: none !important;
 }
 #rsvpDone { flex-direction: column; align-items: center; gap: .8rem; animation: fadeIn .5s ease; }
+.invite-names-list { list-style: none; margin: .5rem 0 1.5rem; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.invite-names-list li { font-family: var(--font-serif); font-size: 1.05rem; color: var(--ink); }
 </style>
 CSS;
 }
 
-function buildRsvpSection(string $name): string {
-    $n = h($name);
+function buildRsvpSection(string $greeting, array $displayNames): string {
+    $greetH     = h($greeting);
+    $namesHtml  = '';
+    if (count($displayNames) > 1) {
+        $items = array_map('h', $displayNames);
+        $namesHtml = '<ul class="invite-names-list">'
+            . implode('', array_map(fn($n) => "<li>{$n}</li>", $items))
+            . '</ul>';
+    }
     return <<<HTML
 <section class="rsvp reveal" id="rsvp" aria-label="Подтверждение присутствия">
     <div class="rsvp__bg"></div>
     <div class="container narrow rsvp__inner">
       <p class="eyebrow">ваш ответ</p>
       <h2>Подтверждение</h2>
-      <p class="rsvp__sub rsvp__sub--invite">Дорогой(-ая) <strong>{$n}</strong>, пожалуйста, сообщите о своём присутствии до <strong>20 июля 2026</strong>.</p>
+      <p class="rsvp__sub rsvp__sub--invite">{$greetH}, пожалуйста, сообщите о своём присутствии до <strong>20 июля 2026</strong>.</p>
+      {$namesHtml}
 
       <div id="rsvpInvite">
         <div class="invite-card">
