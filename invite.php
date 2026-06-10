@@ -106,7 +106,6 @@ function buildRsvpSection(string $greeting, array $displayNames): string {
       <p class="eyebrow">ваш ответ</p>
       <h2>Подтверждение</h2>
       <p class="rsvp__sub rsvp__sub--invite">{$greetH}, пожалуйста, сообщите о своём присутствии до <strong>20 июля 2026</strong>.</p>
-      {$namesHtml}
 
       <div id="rsvpInvite">
         <div class="invite-card">
