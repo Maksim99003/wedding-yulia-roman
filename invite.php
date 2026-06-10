@@ -16,19 +16,25 @@ $displayNames   = guestDisplayNames($guest);
 
 $html = file_get_contents(__DIR__ . '/index.html');
 
+$singular = count($displayNames) === 1;
+$gender   = $guest['members'][0]['gender'] ?? ($guest['gender'] ?? '');
+
 // Персональное обращение в письме
 $html = str_replace('Дорогие родные и друзья!', h($greeting) . '!', $html);
 
-// Для одного гостя — замена «вам/вас» на «тебе/тебя»
-if (count($displayNames) === 1) {
-    $html = str_replace('сообщить вам,', 'сообщить тебе,', $html);
-    $html = str_replace('Приглашаем вас', 'Приглашаем тебя', $html);
+// Для одного гостя — замена «вы/вам/вас» → «ты/тебе/тебя»
+if ($singular) {
+    $html = str_replace('сообщить вам,',                   'сообщить тебе,',          $html);
+    $html = str_replace('Приглашаем вас',                  'Приглашаем тебя',         $html);
+    $html = str_replace('если вы поддержите',              'если ты поддержишь',      $html);
+    $html = str_replace('чтобы вам было',                  'чтобы тебе было',         $html);
+    $html = str_replace('к встрече с вами!',               'к встрече с тобой!',      $html);
 }
 
-$rsvpHtml = buildRsvpSection($greeting, $displayNames);
+$rsvpHtml = buildRsvpSection($greeting, $displayNames, $singular);
 $html = preg_replace('/<section[^>]+id="rsvp"[^>]*>.*?<\/section>/su', $rsvpHtml, $html);
 $html = str_replace('</head>', buildInviteStyles() . "\n</head>", $html);
-$html = str_replace('</body>', buildRsvpJs($slug, $currentStatus, $currentComment, $currentZags) . "\n</body>", $html);
+$html = str_replace('</body>', buildRsvpJs($slug, $currentStatus, $currentComment, $currentZags, $singular, $gender) . "\n</body>", $html);
 
 echo $html;
 
@@ -99,22 +105,16 @@ function buildInviteStyles(): string {
 CSS;
 }
 
-function buildRsvpSection(string $greeting, array $displayNames): string {
-    $greetH     = h($greeting);
-    $namesHtml  = '';
-    if (count($displayNames) > 1) {
-        $items = array_map('h', $displayNames);
-        $namesHtml = '<ul class="invite-names-list">'
-            . implode('', array_map(fn($n) => "<li>{$n}</li>", $items))
-            . '</ul>';
-    }
+function buildRsvpSection(string $greeting, array $displayNames, bool $singular = false): string {
+    $greetH   = h($greeting);
+    $verb     = $singular ? 'сообщи' : 'сообщите';
     return <<<HTML
 <section class="rsvp reveal" id="rsvp" aria-label="Подтверждение присутствия">
     <div class="rsvp__bg"></div>
     <div class="container narrow rsvp__inner">
       <p class="eyebrow">ваш ответ</p>
       <h2>Подтверждение</h2>
-      <p class="rsvp__sub rsvp__sub--invite">{$greetH}, пожалуйста, сообщите о своём присутствии до <strong>20 июля 2026</strong>.</p>
+      <p class="rsvp__sub rsvp__sub--invite">{$greetH}, пожалуйста, {$verb} о своём присутствии до <strong>20 июля 2026</strong>.</p>
 
       <div id="rsvpInvite">
         <div class="invite-card">
@@ -160,11 +160,34 @@ HTML;
 }
 
 
-function buildRsvpJs(string $slug, ?string $status, string $comment, ?string $zags): string {
+function buildRsvpJs(string $slug, ?string $status, string $comment, ?string $zags, bool $singular = false, string $gender = ''): string {
     $sj  = json_encode($slug,    JSON_UNESCAPED_UNICODE);
     $stj = json_encode($status,  JSON_UNESCAPED_UNICODE);
     $cj  = json_encode($comment, JSON_UNESCAPED_UNICODE);
     $zj  = json_encode($zags,    JSON_UNESCAPED_UNICODE);
+
+    if ($singular) {
+        $titleAttend  = 'Спасибо! Ждём тебя!';
+        $zagsYes      = ' Ты также будешь на церемонии в ЗАГСе.';
+        $zagsNo       = ' Ждём тебя на банкете!';
+        $confirmed    = $gender === 'm' ? 'Ты подтвердил своё присутствие.'
+                      : ($gender === 'f' ? 'Ты подтвердила своё присутствие.'
+                      : 'Ты подтвердил(-а) своё присутствие.');
+        $declined     = 'Жаль, что не получится. Спасибо, что сообщил' . ($gender === 'f' ? 'а' : '') . ' заранее!';
+    } else {
+        $titleAttend  = 'Спасибо! Ждём вас!';
+        $zagsYes      = ' Вы также будете на церемонии в ЗАГСе.';
+        $zagsNo       = ' Ждём вас на банкете!';
+        $confirmed    = 'Вы подтвердили своё присутствие.';
+        $declined     = 'Жаль, что не получится. Спасибо, что сообщили заранее!';
+    }
+
+    $titleAttendJ = json_encode($titleAttend, JSON_UNESCAPED_UNICODE);
+    $zagsYesJ     = json_encode($zagsYes,     JSON_UNESCAPED_UNICODE);
+    $zagsNoJ      = json_encode($zagsNo,      JSON_UNESCAPED_UNICODE);
+    $confirmedJ   = json_encode($confirmed,   JSON_UNESCAPED_UNICODE);
+    $declinedJ    = json_encode($declined,    JSON_UNESCAPED_UNICODE);
+
     return <<<JS
 <script>
 (function () {
@@ -185,15 +208,15 @@ function buildRsvpJs(string $slug, ?string $status, string $comment, ?string $za
     box.style.display = 'flex';
     if (status === 'attending') {
       icon.textContent  = '🤍';
-      title.textContent = 'Спасибо! Ждём вас!';
-      var zagsNote = zags === 'yes' ? ' Вы также будете на церемонии в ЗАГСе.' : (zags === 'no' ? ' Ждём вас на банкете!' : '');
-      text.textContent  = 'Вы подтвердили своё присутствие.' + zagsNote;
+      title.textContent = {$titleAttendJ};
+      var zagsNote = zags === 'yes' ? {$zagsYesJ} : (zags === 'no' ? {$zagsNoJ} : '');
+      text.textContent  = {$confirmedJ} + zagsNote;
     } else {
       icon.textContent  = '🙏';
       title.textContent = 'Спасибо за ответ';
       text.textContent  = comment
-        ? 'Мы получили ваш ответ. Комментарий: ' + comment
-        : 'Жаль, что не получится. Спасибо, что сообщили заранее!';
+        ? 'Мы получили ответ. Комментарий: ' + comment
+        : {$declinedJ};
     }
   }
 
