@@ -22,3 +22,4 @@ jobs:
             **/.git*
             **/.git*/**
             photos/**
+            data/guests.json

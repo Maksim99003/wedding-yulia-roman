@@ -1,0 +1,11 @@
+Options -Indexes
+RewriteEngine On
+RewriteBase /
+
+# Serve existing files and directories as-is
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# /invite_slug → invite.php
+RewriteRule ^invite_([a-zA-Z0-9_-]+)/?$ invite.php?guest=$1 [L,QSA]

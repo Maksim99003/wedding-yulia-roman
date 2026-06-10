@@ -1,3 +1,4 @@
 .DS_Store
 .vscode/sftp.json
 photos/
+data/guests.json
