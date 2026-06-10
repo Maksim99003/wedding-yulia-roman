@@ -1237,6 +1237,7 @@ body.a11y .dc-card p, body.a11y .wish-card p,
 body.a11y .info-val, body.a11y .info-lbl { font-weight: 600 !important; }
 
 body.a11y .hero__names { font-size: clamp(3.2rem, 14vw, 5.5rem) !important; }
+body.a11y .hero__date  { font-size: clamp(2.8rem, 9vw, 3.8rem) !important; }
 body.a11y h2            { font-size: clamp(2.4rem, 8vw, 4rem) !important; }
 body.a11y h3            { font-size: 1.6rem !important; }
 body.a11y p             { font-size: 1.2rem !important; }
