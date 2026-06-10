@@ -248,5 +248,34 @@
   </footer>
 
   <script src="main.js"></script>
+
+  <!-- Режим для слабовидящих -->
+  <button class="a11y-btn" id="a11yBtn" aria-label="Режим для слабовидящих" aria-pressed="false">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+      <circle cx="12" cy="12" r="3.5"/>
+      <path d="M2 12C5 6 8 3 12 3s7 3 10 9c-3 6-6 9-10 9S5 18 2 12z"/>
+    </svg>
+    Аа
+  </button>
+
+  <script>
+  (function () {
+    var btn  = document.getElementById('a11yBtn');
+    var body = document.body;
+
+    function apply(on) {
+      body.classList.toggle('a11y', on);
+      btn.setAttribute('aria-pressed', String(on));
+    }
+
+    try { if (localStorage.getItem('a11y') === '1') apply(true); } catch(e){}
+
+    btn.addEventListener('click', function () {
+      var next = !body.classList.contains('a11y');
+      apply(next);
+      try { localStorage.setItem('a11y', next ? '1' : '0'); } catch(e){}
+    });
+  })();
+  </script>
 </body>
 </html>
