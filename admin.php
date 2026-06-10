@@ -285,11 +285,26 @@ function toggleAdd() {
   if (p.classList.contains('open')) p.querySelector('input[name=name]').focus();
 }
 function copyLink(btn, url) {
-  navigator.clipboard.writeText(url).then(function () {
+  function done() {
     btn.textContent = 'Скопировано!';
     btn.classList.add('copied');
     setTimeout(function () { btn.textContent = 'Копировать'; btn.classList.remove('copied'); }, 2000);
-  }).catch(function () { prompt('Скопируйте ссылку:', url); });
+  }
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(url).then(done).catch(function () { fallback(url, done); });
+  } else {
+    fallback(url, done);
+  }
+}
+function fallback(url, cb) {
+  var ta = document.createElement('textarea');
+  ta.value = url;
+  ta.style.cssText = 'position:fixed;top:-999px;left:-999px;opacity:0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try { document.execCommand('copy'); cb(); } catch(e) { prompt('Скопируйте ссылку:', url); }
+  document.body.removeChild(ta);
 }
 <?php if ($success): ?>
 document.getElementById('addPanel').classList.add('open');
