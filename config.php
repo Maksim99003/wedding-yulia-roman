@@ -1,6 +1,6 @@
 <?php
 // Пароль для входа в панель управления — измените на свой
-define('ADMIN_PASS', 'wedding2026');
+define('ADMIN_PASS', '01021980');
 
 define('DATA_FILE', __DIR__ . '/data/guests.json');
 define('SITE_URL',  'http://weddingyuliaandroman.ru');
