@@ -19,6 +19,12 @@ $html = file_get_contents(__DIR__ . '/index.html');
 // Персональное обращение в письме
 $html = str_replace('Дорогие родные и друзья!', h($greeting) . '!', $html);
 
+// Для одного гостя — замена «вам/вас» на «тебе/тебя»
+if (count($displayNames) === 1) {
+    $html = str_replace('сообщить вам,', 'сообщить тебе,', $html);
+    $html = str_replace('Приглашаем вас', 'Приглашаем тебя', $html);
+}
+
 $rsvpHtml = buildRsvpSection($greeting, $displayNames);
 $html = preg_replace('/<section[^>]+id="rsvp"[^>]*>.*?<\/section>/su', $rsvpHtml, $html);
 $html = str_replace('</head>', buildInviteStyles() . "\n</head>", $html);
