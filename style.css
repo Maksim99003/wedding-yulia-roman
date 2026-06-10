@@ -1219,97 +1219,21 @@ body { font-size: 1rem; line-height: 1.65; }
 body.a11y .a11y-btn { background: var(--terra); color: #fff; }
 body.a11y .a11y-btn:hover { background: #a05560; }
 
-/* ── Базовые параметры ── */
-body.a11y {
-  font-size: 18px !important;
-  line-height: 1.9 !important;
-  background: #fff !important;
-  color: #111 !important;
-}
+/* ── Увеличенный текст, сохраняя стили шрифтов ── */
+body.a11y { font-size: 120%; line-height: 1.85; }
 
-/* Везде читаемый sans-serif */
-body.a11y, body.a11y h1, body.a11y h2, body.a11y h3,
-body.a11y p, body.a11y span, body.a11y a, body.a11y button,
-body.a11y label, body.a11y li, body.a11y blockquote,
-body.a11y .letter__text, body.a11y .letter__sig,
-body.a11y .eyebrow, body.a11y .hero__names {
-  font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif !important;
-}
+body.a11y h1, body.a11y h2, body.a11y h3,
+body.a11y h4, body.a11y h5 { font-weight: 600 !important; }
 
-/* Высокий контраст текста */
-body.a11y h1, body.a11y h2, body.a11y h3 {
-  color: #111 !important;
-  font-weight: 700 !important;
-  line-height: 1.3 !important;
-}
-body.a11y p, body.a11y li, body.a11y address { color: #222 !important; }
-body.a11y .eyebrow { color: #b54a42 !important; font-weight: 700 !important; }
+body.a11y p, body.a11y li, body.a11y address,
+body.a11y .letter__text, body.a11y .eyebrow,
+body.a11y .tl-time, body.a11y .tl-title, body.a11y .tl-note,
+body.a11y .dc-card p, body.a11y .wish-card p,
+body.a11y .info-val, body.a11y .info-lbl { font-weight: 500 !important; }
 
-/* Размеры текста */
-body.a11y h2 { font-size: 2rem !important; }
-body.a11y h3 { font-size: 1.35rem !important; }
-body.a11y p  { font-size: 1.1rem !important; }
-body.a11y .letter__text {
-  font-size: 1.2rem !important;
-  line-height: 2.1 !important;
-  color: #111 !important;
-}
-body.a11y .letter__sig { font-size: 1.4rem !important; color: #b54a42 !important; }
-
-/* ── Герой: фото пионов остаётся, увеличиваем текст ── */
-body.a11y .hero {
-  min-height: auto !important;
-  padding: 56px 20px 48px !important;
-}
-body.a11y .hero__petals { display: none !important; }
-body.a11y .hero__names  {
-  color: #111 !important;
-  text-shadow: none !important;
-  font-size: clamp(2rem, 8vw, 3.2rem) !important;
-}
-body.a11y .hero__date,
-body.a11y .hero__date-txt { color: #333 !important; }
-body.a11y .hero__divider { opacity: .35; }
-body.a11y .hero__countdown {
-  background: rgba(0,0,0,.06) !important;
-  backdrop-filter: none !important;
-  border-color: #ccc !important;
-  color: #111 !important;
-}
-body.a11y .countdown__num,
-body.a11y .countdown__lbl { color: #111 !important; }
-
-/* ── Секции: белый фон ── */
-body.a11y section { background: #fff !important; }
-body.a11y .gallery { background: #faf6f3 !important; }
-body.a11y .rsvp { background: #faf6f3 !important; }
-body.a11y .rsvp__bg { display: none !important; }
-body.a11y .fl-transition { display: none !important; }
-
-/* ── Карточки ── */
-body.a11y .dc-card,
-body.a11y .wish-card,
-body.a11y .info-card,
-body.a11y .location-card {
-  background: #f4efeb !important;
-  border: 1.5px solid #ccc !important;
-}
-body.a11y .dc-card h3,
-body.a11y .wish-card h3 { color: #111 !important; }
-
-/* ── Кнопки и ссылки ── */
-body.a11y .btn--primary {
-  background: #b54a42 !important;
-  font-size: 1rem !important;
-  padding: 15px 30px !important;
-}
-body.a11y .btn--outline {
-  border-width: 2.5px !important;
-  font-size: 1rem !important;
-}
-
-/* ── Подвал ── */
-body.a11y .footer { background: #1a0d08 !important; }
-body.a11y .footer__bg { display: none !important; }
-body.a11y .footer__names,
-body.a11y .footer__date { color: #fff !important; }
+body.a11y .hero__names { font-size: clamp(3rem, 12vw, 5rem) !important; }
+body.a11y h2            { font-size: clamp(2.2rem, 7vw, 3.6rem) !important; }
+body.a11y h3            { font-size: 1.4rem !important; }
+body.a11y p             { font-size: 1.15rem !important; }
+body.a11y .letter__text { font-size: clamp(1.2rem, 4vw, 1.6rem) !important; }
+body.a11y .eyebrow      { font-size: .9rem !important; font-weight: 700 !important; }
