@@ -347,7 +347,7 @@ section { padding: 3rem 16px; }
 }
 .letter__text {
   font-family: var(--font-serif);
-  font-size: clamp(1.1rem, 4vw, 1.4rem);
+  font-size: clamp(1.2rem, 4vw, 1.55rem);
   font-weight: 300;
   line-height: 1.85;
   color: var(--ink);
@@ -499,7 +499,7 @@ section { padding: 3rem 16px; }
 .dresscode { text-align: center; background: #fff; }
 
 .dresscode__text {
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: var(--mid);
   line-height: 1.7;
   margin-bottom: 2.5rem;
@@ -555,7 +555,7 @@ section { padding: 3rem 16px; }
 .dc-card:hover { transform: translateY(-4px); }
 .dc-icon { font-size: 2rem; margin-bottom: .8rem; }
 .dc-card h3 { font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: .5rem; }
-.dc-card p  { font-size: .9rem; color: var(--mid); line-height: 1.6; }
+.dc-card p  { font-size: 1.05rem; color: var(--mid); line-height: 1.6; }
 
 /* ══════════════════════════════════════════════════
    OUTFIT FIGURES
@@ -676,7 +676,7 @@ section { padding: 3rem 16px; }
 .wish-card:hover { transform: translateY(-4px); border-color: var(--terra); }
 .wish-icon { font-size: 1.8rem; margin-bottom: .8rem; }
 .wish-card h3 { font-family: var(--font-serif); font-size: 1.2rem; margin-bottom: .5rem; color: var(--ink); }
-.wish-card p  { font-size: .88rem; color: var(--mid); line-height: 1.65; }
+.wish-card p  { font-size: 1.05rem; color: var(--mid); line-height: 1.65; }
 
 /* ══════════════════════════════════════════════════
    CONTACTS
