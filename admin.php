@@ -167,6 +167,16 @@ tbody tr:last-child td{border-bottom:none}
 .gender-select:focus{border-color:#C07068}
 .export-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;background:#1a6640;color:#fff;border-radius:6px;font-size:.78rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;transition:background .2s}
 .export-btn:hover{background:#145535;color:#fff}
+.filter-bar{padding:12px 20px;border-bottom:1px solid #f0ebe8;display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.filter-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.filter-lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9e7d72;white-space:nowrap}
+.fbtn{padding:5px 12px;border-radius:20px;border:1.5px solid #e0d5cc;background:#fff;font-size:.78rem;font-weight:600;color:#9e7d72;cursor:pointer;transition:all .15s;white-space:nowrap}
+.fbtn:hover{border-color:#C07068;color:#C07068}
+.fbtn.active{background:#C07068;border-color:#C07068;color:#fff}
+.fbtn.active-yes{background:#1a6640;border-color:#1a6640;color:#fff}
+.fbtn.active-no{background:#a93226;border-color:#a93226;color:#fff}
+.fbtn.active-wait{background:#7a5f1a;border-color:#7a5f1a;color:#fff}
+.fbtn.active-zyes{background:#1a3a6e;border-color:#1a3a6e;color:#fff}
 
 @media(max-width:700px){
   .hdr{padding:0 16px} .body-wrap{padding:16px}
@@ -260,8 +270,23 @@ tbody tr:last-child td{border-bottom:none}
     <div class="tbl-top">
       <h2>Список гостей</h2>
       <div style="display:flex;align-items:center;gap:12px">
-        <span class="tbl-count">Всего: <?= $stats['total'] ?></span>
+        <span class="tbl-count">Показано: <b id="visibleCount"><?= $stats['total'] ?></b></span>
         <a href="export.php" class="export-btn">↓ Экспорт Excel</a>
+      </div>
+    </div>
+    <div class="filter-bar">
+      <div class="filter-group">
+        <span class="filter-lbl">Статус:</span>
+        <button class="fbtn active" data-f="status" data-v="">Все</button>
+        <button class="fbtn" data-f="status" data-v="attending" data-cls="active-yes">Придут</button>
+        <button class="fbtn" data-f="status" data-v="not_attending" data-cls="active-no">Не придут</button>
+        <button class="fbtn" data-f="status" data-v="wait" data-cls="active-wait">Ожидают</button>
+      </div>
+      <div class="filter-group">
+        <span class="filter-lbl">ЗАГС:</span>
+        <button class="fbtn active" data-f="zags" data-v="">Все</button>
+        <button class="fbtn" data-f="zags" data-v="yes" data-cls="active-zyes">Будут</button>
+        <button class="fbtn" data-f="zags" data-v="no" data-cls="active-no">Не будут</button>
       </div>
     </div>
     <table>
@@ -275,7 +300,7 @@ tbody tr:last-child td{border-bottom:none}
           <th></th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="guestTbody">
       <?php if (empty($guests)): ?>
         <tr class="empty-row"><td colspan="6">Гостей пока нет. Нажмите «+ Добавить гостя».</td></tr>
       <?php else: $n = 0; foreach ($guests as $slug => $g):
@@ -301,7 +326,7 @@ tbody tr:last-child td{border-bottom:none}
         $displayNames = guestDisplayNames($g);
         $primaryName  = $displayNames[0];
       ?>
-        <tr>
+        <tr data-status="<?= $st ?? 'wait' ?>" data-zags="<?= $zags ?? 'unknown' ?>">
           <td class="td-num"><?= $n ?></td>
           <td class="td-name td-members">
             <?php foreach ($displayNames as $dn): ?>
@@ -334,6 +359,30 @@ tbody tr:last-child td{border-bottom:none}
 <?php endif; ?>
 
 <script>
+var activeF = { status: '', zags: '' };
+document.querySelectorAll('.fbtn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var f = this.dataset.f, v = this.dataset.v, cls = this.dataset.cls || 'active';
+    document.querySelectorAll('.fbtn[data-f="' + f + '"]').forEach(function(b) {
+      b.classList.remove('active','active-yes','active-no','active-wait','active-zyes');
+    });
+    this.classList.add(cls);
+    activeF[f] = v;
+    applyFilters();
+  });
+});
+function applyFilters() {
+  var rows = document.querySelectorAll('#guestTbody tr[data-status]');
+  var cnt = 0;
+  rows.forEach(function(row) {
+    var sOk = !activeF.status || row.dataset.status === activeF.status;
+    var zOk = !activeF.zags   || row.dataset.zags   === activeF.zags;
+    row.style.display = (sOk && zOk) ? '' : 'none';
+    if (sOk && zOk) cnt++;
+  });
+  var el = document.getElementById('visibleCount');
+  if (el) el.textContent = cnt;
+}
 function addMember() {
   var list = document.getElementById('membersList');
   var row  = document.createElement('div');
