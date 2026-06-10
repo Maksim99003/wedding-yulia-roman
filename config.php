@@ -59,15 +59,25 @@ function guestDisplayNames(array $guest): array {
     return [$guest['name'] ?? 'Гость'];
 }
 
-// Приветствие: "Дорогой(-ая) Иван" / "Дорогие Иван и Мария"
+// Приветствие с учётом пола: "Дорогой Андрей" / "Дорогая Юлия" / "Дорогие Андрей и Юлия"
 function guestGreeting(array $guest): string {
     if (!empty($guest['members']) && is_array($guest['members'])) {
-        $firsts = array_map(fn($m) => trim($m['first'] ?? ''), $guest['members']);
+        $members = array_values(array_filter($guest['members'], fn($m) => trim($m['first'] ?? '') !== ''));
     } else {
-        $firsts = [$guest['name'] ?? 'Гость'];
+        return 'Дорогой(-ая) ' . ($guest['name'] ?? 'гость');
     }
-    $firsts = array_filter($firsts);
-    if (count($firsts) === 1) return 'Дорогой(-ая) ' . reset($firsts);
-    $last = array_pop($firsts);
+    if (empty($members)) return 'Дорогой(-ая) гость';
+
+    if (count($members) === 1) {
+        $m = $members[0];
+        $first  = trim($m['first'] ?? '');
+        $gender = $m['gender'] ?? '';
+        if ($gender === 'm') return 'Дорогой ' . $first;
+        if ($gender === 'f') return 'Дорогая ' . $first;
+        return 'Дорогой(-ая) ' . $first;
+    }
+
+    $firsts = array_map(fn($m) => trim($m['first'] ?? ''), $members);
+    $last   = array_pop($firsts);
     return 'Дорогие ' . implode(', ', $firsts) . ' и ' . $last;
 }

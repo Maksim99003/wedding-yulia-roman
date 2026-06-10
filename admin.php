@@ -23,11 +23,15 @@ if ($isAuth) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $action = $_POST['action'] ?? '';
         if ($action === 'add') {
-            $firsts = array_map('trim', (array)($_POST['first'] ?? []));
-            $lasts  = array_map('trim', (array)($_POST['last']  ?? []));
+            $firsts  = array_map('trim', (array)($_POST['first']  ?? []));
+            $lasts   = array_map('trim', (array)($_POST['last']   ?? []));
+            $genders = array_map('trim', (array)($_POST['gender'] ?? []));
             $members = [];
             for ($i = 0; $i < count($firsts); $i++) {
-                if ($firsts[$i]) $members[] = ['first' => $firsts[$i], 'last' => $lasts[$i] ?? ''];
+                if ($firsts[$i]) {
+                    $g = in_array($genders[$i] ?? '', ['m','f']) ? $genders[$i] : '';
+                    $members[] = ['first' => $firsts[$i], 'last' => $lasts[$i] ?? '', 'gender' => $g];
+                }
             }
             if ($members) {
                 $slug = makeSlug($members[0]['first'], $members[0]['last']);
@@ -160,6 +164,8 @@ tbody tr:last-child td{border-bottom:none}
 .form-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px}
 .td-members{line-height:1.5}
 .td-members span{display:block;font-size:.82rem;color:#9e7d72;font-weight:400}
+.gender-select{padding:9px 6px;border:1.5px solid #ddd;border-radius:8px;font-size:.88rem;outline:none;background:#fff;cursor:pointer;min-width:68px;flex-shrink:0}
+.gender-select:focus{border-color:#C07068}
 
 @media(max-width:700px){
   .hdr{padding:0 16px} .body-wrap{padding:16px}
@@ -231,6 +237,11 @@ tbody tr:last-child td{border-bottom:none}
         <div class="member-row">
           <input type="text" name="first[]" placeholder="Имя" required>
           <input type="text" name="last[]"  placeholder="Фамилия">
+          <select name="gender[]" class="gender-select">
+            <option value="">Пол</option>
+            <option value="m">М</option>
+            <option value="f">Ж</option>
+          </select>
         </div>
       </div>
       <div class="form-footer">
@@ -316,6 +327,7 @@ function addMember() {
   row.className = 'member-row';
   row.innerHTML = '<input type="text" name="first[]" placeholder="Имя">'
     + '<input type="text" name="last[]" placeholder="Фамилия">'
+    + '<select name="gender[]" class="gender-select"><option value="">Пол</option><option value="m">М</option><option value="f">Ж</option></select>'
     + '<button type="button" class="remove-btn" onclick="this.parentElement.remove()">Убрать</button>';
   list.appendChild(row);
   row.querySelector('input').focus();
