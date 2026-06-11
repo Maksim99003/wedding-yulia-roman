@@ -465,9 +465,12 @@ section { padding: 3rem 16px; }
 @media (min-width: 768px) { .location { padding: 6rem 24px; } }
 .location__bg {
   position: absolute; inset: 0;
-  background:
-    linear-gradient(135deg, rgba(229,184,168,.25) 0%, rgba(201,136,120,.15) 100%),
-    repeating-linear-gradient(45deg, transparent, transparent 30px, rgba(201,136,120,.04) 30px, rgba(201,136,120,.04) 31px);
+  background: url('flowers.jpg') center/cover no-repeat;
+}
+.location__bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(243, 229, 220, 0.78);
 }
 .location__content { position: relative; z-index: 1; }
 
