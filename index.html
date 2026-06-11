@@ -223,37 +223,52 @@
   <div class="fl-transition" aria-hidden="true"></div>
 
   <!-- ░░ RSVP ░░ -->
-  <section class="rsvp reveal" id="rsvp" aria-label="Анкета гостя">
+  <section class="rsvp reveal" id="rsvp" aria-label="Подтверждение присутствия">
     <div class="rsvp__bg"></div>
     <div class="container narrow rsvp__inner">
-      <p class="eyebrow">анкета</p>
+      <p class="eyebrow">ваш ответ</p>
       <h2>Подтверждение</h2>
       <p class="rsvp__sub">Пожалуйста, сообщите о своём присутствии до <strong>20 июля 2026</strong> — это поможет нам подготовиться к встрече с вами!</p>
-      <form class="rsvp-form" id="rsvpForm" novalidate aria-label="Анкета подтверждения участия">
-        <div class="form-group">
-          <label>ФИО</label>
-          <input type="text" name="name" placeholder="Иванова Анна Сергеевна" required />
-        </div>
-        <div class="form-group">
-          <label>Присутствие</label>
-          <div class="radio-group">
-            <label class="radio-label"><input type="radio" name="attendance" value="yes" required /><span>Приду с удовольствием!</span></label>
-            <label class="radio-label"><input type="radio" name="attendance" value="no" /><span>Не смогу присутствовать</span></label>
+
+      <div class="invite-card">
+        <div id="rsvpStep0">
+          <div class="form-group" style="margin-bottom:1.4rem">
+            <label style="display:block;font-family:var(--font-sans);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);margin-bottom:.5rem">Ваше имя</label>
+            <input id="rsvpGenName" type="text" placeholder="Иванова Анна Сергеевна"
+              style="width:100%;padding:14px 16px;border:1.5px solid rgba(201,136,120,.3);border-radius:10px;font-family:var(--font-sans);font-size:1rem;color:var(--ink);background:#fff;outline:none;box-sizing:border-box" />
+          </div>
+          <div class="invite-btns">
+            <button class="btn btn--invite-yes" onclick="rsvpGenSubmit('attending')">🤍&nbsp;&nbsp;Буду присутствовать</button>
+            <button class="btn btn--invite-no"  onclick="rsvpGenSubmit('not_attending')">Не смогу присутствовать</button>
           </div>
         </div>
-        <div class="form-group">
-          <label>Имя вашей пары (при наличии)</label>
-          <input type="text" name="partner" placeholder="Иванов Иван Иванович" />
+
+        <div id="rsvpGenDone" class="rsvp-success" style="display:none">
+          <div class="success-icon">🤍</div>
+          <h3 id="rsvpGenTitle"></h3>
+          <p id="rsvpGenText"></p>
         </div>
-        <button type="submit" class="btn btn--primary">Отправить анкету</button>
-      </form>
-      <div class="rsvp-success" id="rsvpSuccess">
-        <div class="success-icon">🤍</div>
-        <h3>Спасибо!</h3>
-        <p>Мы получили ваш ответ и будем рады видеть вас на нашем торжестве!</p>
       </div>
     </div>
   </section>
+  <script>
+  window.rsvpGenSubmit = function(status) {
+    var name = document.getElementById('rsvpGenName').value.trim();
+    if (!name) { document.getElementById('rsvpGenName').focus(); return; }
+    fetch('/rsvp_general.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ name: name, status: status })
+    }).catch(function(){});
+    document.getElementById('rsvpStep0').style.display = 'none';
+    var done = document.getElementById('rsvpGenDone');
+    done.style.display = 'flex';
+    document.getElementById('rsvpGenTitle').textContent = status === 'attending' ? 'Спасибо! Ждём вас!' : 'Спасибо за ответ';
+    document.getElementById('rsvpGenText').textContent  = status === 'attending'
+      ? 'Мы получили ваш ответ и будем рады видеть вас на нашем торжестве!'
+      : 'Жаль, что не получится. Спасибо, что сообщили заранее!';
+  };
+  </script>
 
   </main>
 
