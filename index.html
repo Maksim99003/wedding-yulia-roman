@@ -232,73 +232,75 @@
 
       <div class="invite-card">
 
-        <!-- Шаг 1: приду / не приду -->
+        <!-- Шаг 1 -->
         <div class="invite-btns" id="genStep1">
-          <button class="btn btn--invite-yes" onclick="genRsvp('attending')">🤍&nbsp;&nbsp;Буду присутствовать</button>
-          <button class="btn btn--invite-no"  onclick="genRsvp('not_attending')">Не смогу присутствовать</button>
+          <button class="btn btn--invite-yes" onclick="genStep(2,'attending')">🤍&nbsp;&nbsp;Буду присутствовать</button>
+          <button class="btn btn--invite-no"  onclick="genStep(3,'not_attending')">Не смогу присутствовать</button>
         </div>
 
-        <!-- Шаг 2: ЗАГС (если attending) -->
+        <!-- Шаг 2: ЗАГС -->
         <div id="genStep2" style="display:none">
           <p style="font-size:1rem;color:var(--mid);margin-bottom:1.4rem;line-height:1.6">Планируете ли вы присутствовать на церемонии в ЗАГСе?</p>
           <div class="invite-btns">
-            <button class="btn btn--invite-yes" onclick="genZags('yes')">Да, буду в ЗАГСе</button>
-            <button class="btn btn--invite-no"  onclick="genZags('no')">Нет, только на банкете</button>
+            <button class="btn btn--invite-yes" onclick="genFinish('attending','yes')">Да, буду в ЗАГСе</button>
+            <button class="btn btn--invite-no"  onclick="genFinish('attending','no')">Нет, только на банкете</button>
           </div>
         </div>
 
-        <!-- Шаг 3: комментарий (если not_attending) -->
+        <!-- Шаг 3: комментарий -->
         <div id="genStep3" style="display:none">
           <p style="font-size:.95rem;color:var(--mid);margin-bottom:.8rem">Хотите оставить комментарий?</p>
           <textarea id="genComment" placeholder="Комментарий (по желанию)…" rows="3" maxlength="500"
             style="width:100%;padding:12px 14px;border:1.5px solid rgba(201,136,120,.25);border-radius:10px;font-family:var(--font-sans);font-size:.95rem;resize:vertical;box-sizing:border-box"></textarea>
           <div class="invite-btns" style="margin-top:1rem">
-            <button class="btn btn--invite-yes" onclick="genSave('not_attending', null)">Отправить</button>
-            <button class="btn btn--invite-no"  onclick="genBack()">Назад</button>
+            <button class="btn btn--invite-yes" onclick="genFinish('not_attending',null)">Отправить</button>
+            <button class="btn btn--invite-no"  onclick="genReset()">Назад</button>
           </div>
         </div>
 
         <!-- Готово -->
-        <div id="genDone" class="rsvp-success" style="display:none">
-          <div class="success-icon">🤍</div>
-          <h3 id="genDoneTitle"></h3>
-          <p id="genDoneText"></p>
+        <div id="genDone" style="display:none;flex-direction:column;align-items:center;gap:.8rem;padding:1rem 0;text-align:center">
+          <div style="font-size:2.8rem">🤍</div>
+          <h3 id="genDoneTitle" style="font-family:var(--font-serif);font-size:1.8rem;color:var(--ink)"></h3>
+          <p id="genDoneText" style="color:var(--mid)"></p>
+          <button class="btn btn--outline btn--sm" onclick="genReset()" style="margin-top:.8rem">Изменить ответ</button>
         </div>
 
       </div>
     </div>
+
+    <script>
+    (function () {
+      var STEPS = ['genStep1','genStep2','genStep3','genDone'];
+      function showOnly(id) {
+        STEPS.forEach(function(s) {
+          var el = document.getElementById(s);
+          if (!el) return;
+          if (s === id) {
+            el.style.display = (s === 'genStep1') ? 'flex' : (s === 'genDone') ? 'flex' : 'block';
+          } else {
+            el.style.display = 'none';
+          }
+        });
+      }
+      window.genStep   = function(step, status) { window._genStatus = status; showOnly('genStep' + step); };
+      window.genReset  = function() { window._genStatus = null; document.getElementById('genComment').value = ''; showOnly('genStep1'); };
+      window.genFinish = function(status, zags) {
+        var comment = document.getElementById('genComment').value.trim();
+        fetch('/rsvp_general.php', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ status: status, zags: zags, comment: comment })
+        }).catch(function(){});
+        showOnly('genDone');
+        document.getElementById('genDoneTitle').textContent = status === 'attending' ? 'Спасибо! Ждём вас!' : 'Спасибо за ответ';
+        document.getElementById('genDoneText').textContent  = status === 'attending'
+          ? (zags === 'yes' ? 'Вы будете на церемонии в ЗАГСе и на банкете.' : 'Ждём вас на банкете!')
+          : 'Жаль, что не получится. Спасибо, что сообщили заранее!';
+      };
+    })();
+    </script>
   </section>
-  <script>
-  (function () {
-    var pendingStatus = null;
-    function show(id) {
-      ['genStep1','genStep2','genStep3','genDone'].forEach(function(s){
-        document.getElementById(s).style.display = s === id ? (id === 'genDone' ? 'flex' : 'block') : 'none';
-      });
-      if (id === 'genStep1') document.getElementById('genStep1').style.display = 'flex';
-    }
-    window.genRsvp = function(status) {
-      pendingStatus = status;
-      if (status === 'attending') { show('genStep2'); }
-      else { show('genStep3'); }
-    };
-    window.genZags = function(zags) { genSave('attending', zags); };
-    window.genBack = function() { show('genStep1'); pendingStatus = null; };
-    window.genSave = function(status, zags) {
-      var comment = (document.getElementById('genComment') || {}).value || '';
-      fetch('/rsvp_general.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ status: status, zags: zags, comment: comment.trim() })
-      }).catch(function(){});
-      show('genDone');
-      document.getElementById('genDoneTitle').textContent = status === 'attending' ? 'Спасибо! Ждём вас!' : 'Спасибо за ответ';
-      document.getElementById('genDoneText').textContent  = status === 'attending'
-        ? (zags === 'yes' ? 'Вы будете на церемонии в ЗАГСе и на банкете.' : 'Ждём вас на банкете!')
-        : 'Жаль, что не получится. Спасибо, что сообщили заранее!';
-    };
-  })();
-  </script>
 
   </main>
 
