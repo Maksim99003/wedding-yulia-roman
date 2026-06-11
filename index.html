@@ -222,6 +222,39 @@
   </section>
   <div class="fl-transition" aria-hidden="true"></div>
 
+  <!-- ░░ RSVP ░░ -->
+  <section class="rsvp reveal" id="rsvp" aria-label="Анкета гостя">
+    <div class="rsvp__bg"></div>
+    <div class="container narrow rsvp__inner">
+      <p class="eyebrow">анкета</p>
+      <h2>Подтверждение</h2>
+      <p class="rsvp__sub">Пожалуйста, сообщите о своём присутствии до <strong>20 июля 2026</strong> — это поможет нам подготовиться к встрече с вами!</p>
+      <form class="rsvp-form" id="rsvpForm" novalidate aria-label="Анкета подтверждения участия">
+        <div class="form-group">
+          <label>ФИО</label>
+          <input type="text" name="name" placeholder="Иванова Анна Сергеевна" required />
+        </div>
+        <div class="form-group">
+          <label>Присутствие</label>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="attendance" value="yes" required /><span>Приду с удовольствием!</span></label>
+            <label class="radio-label"><input type="radio" name="attendance" value="no" /><span>Не смогу присутствовать</span></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Имя вашей пары (при наличии)</label>
+          <input type="text" name="partner" placeholder="Иванов Иван Иванович" />
+        </div>
+        <button type="submit" class="btn btn--primary">Отправить анкету</button>
+      </form>
+      <div class="rsvp-success" id="rsvpSuccess">
+        <div class="success-icon">🤍</div>
+        <h3>Спасибо!</h3>
+        <p>Мы получили ваш ответ и будем рады видеть вас на нашем торжестве!</p>
+      </div>
+    </div>
+  </section>
+
   </main>
 
   <!-- ░░ FOOTER ░░ -->
