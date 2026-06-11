@@ -7,11 +7,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$body   = json_decode(file_get_contents('php://input'), true) ?? [];
-$name   = mb_substr(trim($body['name'] ?? ''), 0, 200, 'UTF-8');
-$status = in_array($body['status'] ?? '', ['attending', 'not_attending']) ? $body['status'] : null;
+$body    = json_decode(file_get_contents('php://input'), true) ?? [];
+$status  = in_array($body['status'] ?? '', ['attending', 'not_attending']) ? $body['status'] : null;
+$zags    = in_array($body['zags']   ?? '', ['yes', 'no']) ? $body['zags'] : null;
+$comment = mb_substr(trim($body['comment'] ?? ''), 0, 500, 'UTF-8');
 
-if (!$name || !$status) {
+if (!$status) {
     echo json_encode(['error' => 'invalid']);
     exit;
 }
@@ -19,8 +20,9 @@ if (!$name || !$status) {
 $file = __DIR__ . '/data/general_rsvp.json';
 $entries = file_exists($file) ? (json_decode(file_get_contents($file), true) ?: []) : [];
 $entries[] = [
-    'name'       => $name,
     'status'     => $status,
+    'zags'       => $zags,
+    'comment'    => $comment,
     'updated_at' => date('Y-m-d\TH:i:s'),
 ];
 

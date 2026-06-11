@@ -231,43 +231,73 @@
       <p class="rsvp__sub">Пожалуйста, сообщите о своём присутствии до <strong>20 июля 2026</strong> — это поможет нам подготовиться к встрече с вами!</p>
 
       <div class="invite-card">
-        <div id="rsvpStep0">
-          <div class="form-group" style="margin-bottom:1.4rem">
-            <label style="display:block;font-family:var(--font-sans);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);margin-bottom:.5rem">Ваше имя</label>
-            <input id="rsvpGenName" type="text" placeholder="Иванова Анна Сергеевна"
-              style="width:100%;padding:14px 16px;border:1.5px solid rgba(201,136,120,.3);border-radius:10px;font-family:var(--font-sans);font-size:1rem;color:var(--ink);background:#fff;outline:none;box-sizing:border-box" />
-          </div>
+
+        <!-- Шаг 1: приду / не приду -->
+        <div class="invite-btns" id="genStep1">
+          <button class="btn btn--invite-yes" onclick="genRsvp('attending')">🤍&nbsp;&nbsp;Буду присутствовать</button>
+          <button class="btn btn--invite-no"  onclick="genRsvp('not_attending')">Не смогу присутствовать</button>
+        </div>
+
+        <!-- Шаг 2: ЗАГС (если attending) -->
+        <div id="genStep2" style="display:none">
+          <p style="font-size:1rem;color:var(--mid);margin-bottom:1.4rem;line-height:1.6">Планируете ли вы присутствовать на церемонии в ЗАГСе?</p>
           <div class="invite-btns">
-            <button class="btn btn--invite-yes" onclick="rsvpGenSubmit('attending')">🤍&nbsp;&nbsp;Буду присутствовать</button>
-            <button class="btn btn--invite-no"  onclick="rsvpGenSubmit('not_attending')">Не смогу присутствовать</button>
+            <button class="btn btn--invite-yes" onclick="genZags('yes')">Да, буду в ЗАГСе</button>
+            <button class="btn btn--invite-no"  onclick="genZags('no')">Нет, только на банкете</button>
           </div>
         </div>
 
-        <div id="rsvpGenDone" class="rsvp-success" style="display:none">
-          <div class="success-icon">🤍</div>
-          <h3 id="rsvpGenTitle"></h3>
-          <p id="rsvpGenText"></p>
+        <!-- Шаг 3: комментарий (если not_attending) -->
+        <div id="genStep3" style="display:none">
+          <p style="font-size:.95rem;color:var(--mid);margin-bottom:.8rem">Хотите оставить комментарий?</p>
+          <textarea id="genComment" placeholder="Комментарий (по желанию)…" rows="3" maxlength="500"
+            style="width:100%;padding:12px 14px;border:1.5px solid rgba(201,136,120,.25);border-radius:10px;font-family:var(--font-sans);font-size:.95rem;resize:vertical;box-sizing:border-box"></textarea>
+          <div class="invite-btns" style="margin-top:1rem">
+            <button class="btn btn--invite-yes" onclick="genSave('not_attending', null)">Отправить</button>
+            <button class="btn btn--invite-no"  onclick="genBack()">Назад</button>
+          </div>
         </div>
+
+        <!-- Готово -->
+        <div id="genDone" class="rsvp-success" style="display:none">
+          <div class="success-icon">🤍</div>
+          <h3 id="genDoneTitle"></h3>
+          <p id="genDoneText"></p>
+        </div>
+
       </div>
     </div>
   </section>
   <script>
-  window.rsvpGenSubmit = function(status) {
-    var name = document.getElementById('rsvpGenName').value.trim();
-    if (!name) { document.getElementById('rsvpGenName').focus(); return; }
-    fetch('/rsvp_general.php', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ name: name, status: status })
-    }).catch(function(){});
-    document.getElementById('rsvpStep0').style.display = 'none';
-    var done = document.getElementById('rsvpGenDone');
-    done.style.display = 'flex';
-    document.getElementById('rsvpGenTitle').textContent = status === 'attending' ? 'Спасибо! Ждём вас!' : 'Спасибо за ответ';
-    document.getElementById('rsvpGenText').textContent  = status === 'attending'
-      ? 'Мы получили ваш ответ и будем рады видеть вас на нашем торжестве!'
-      : 'Жаль, что не получится. Спасибо, что сообщили заранее!';
-  };
+  (function () {
+    var pendingStatus = null;
+    function show(id) {
+      ['genStep1','genStep2','genStep3','genDone'].forEach(function(s){
+        document.getElementById(s).style.display = s === id ? (id === 'genDone' ? 'flex' : 'block') : 'none';
+      });
+      if (id === 'genStep1') document.getElementById('genStep1').style.display = 'flex';
+    }
+    window.genRsvp = function(status) {
+      pendingStatus = status;
+      if (status === 'attending') { show('genStep2'); }
+      else { show('genStep3'); }
+    };
+    window.genZags = function(zags) { genSave('attending', zags); };
+    window.genBack = function() { show('genStep1'); pendingStatus = null; };
+    window.genSave = function(status, zags) {
+      var comment = (document.getElementById('genComment') || {}).value || '';
+      fetch('/rsvp_general.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ status: status, zags: zags, comment: comment.trim() })
+      }).catch(function(){});
+      show('genDone');
+      document.getElementById('genDoneTitle').textContent = status === 'attending' ? 'Спасибо! Ждём вас!' : 'Спасибо за ответ';
+      document.getElementById('genDoneText').textContent  = status === 'attending'
+        ? (zags === 'yes' ? 'Вы будете на церемонии в ЗАГСе и на банкете.' : 'Ждём вас на банкете!')
+        : 'Жаль, что не получится. Спасибо, что сообщили заранее!';
+    };
+  })();
   </script>
 
   </main>
