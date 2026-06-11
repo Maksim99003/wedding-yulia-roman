@@ -470,7 +470,12 @@ section { padding: 3rem 16px; }
 .location__bg::after {
   content: '';
   position: absolute; inset: 0;
-  background: rgba(243, 229, 220, 0.78);
+  background: linear-gradient(
+    to bottom,
+    #F3E5DC 0%,
+    rgba(243, 229, 220, 0.82) 18%,
+    rgba(243, 229, 220, 0.78) 100%
+  );
 }
 .location__content { position: relative; z-index: 1; }
 
