@@ -433,6 +433,9 @@ section { padding: 3rem 16px; }
   object-fit: cover;
   display: block;
 }
+.gallery__grid .polaroid:nth-child(3) .polaroid__img img {
+  transform: scale(1.35);
+}
 
 /* Hide broken img, show placeholder */
 .polaroid__img.no-img img { display: none; }
