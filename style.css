@@ -388,15 +388,17 @@ section { padding: 3rem 16px; }
 
 .polaroid {
   background: #fff;
-  padding: 8px 8px 32px;
+  padding: 8px 8px 0;
   box-shadow: 0 4px 20px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.05);
   border-radius: 2px;
   transition: transform .4s cubic-bezier(.34,1.56,.64,1), box-shadow .4s ease;
   cursor: default;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (min-width: 768px) {
-  .polaroid { padding: 12px 12px 40px; }
+  .polaroid { padding: 12px 12px 0; }
 }
 
 /* Tilt only on desktop (causes clipping in tight grid) */
@@ -452,10 +454,14 @@ section { padding: 3rem 16px; }
 
 .polaroid__caption {
   font-family: var(--font-script);
-  font-size: 1.1rem;
+  font-size: 1.45rem;
   color: var(--mid);
-  margin-top: 10px;
   line-height: 1;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 /* ══════════════════════════════════════════════════
@@ -1014,7 +1020,7 @@ textarea { resize: vertical; min-height: 100px; }
 
 @media (max-width: 390px) {
   .hero__names { font-size: clamp(2.6rem, 14vw, 3.8rem); }
-  .polaroid { padding: 6px 6px 26px; }
+  .polaroid { padding: 6px 6px 0; }
   .dc-card, .wish-card { padding: 1.2rem; }
 }
 
