@@ -1197,6 +1197,30 @@ body { font-size: 1rem; line-height: 1.65; }
    РЕЖИМ ДЛЯ СЛАБОВИДЯЩИХ (body.a11y)
    ══════════════════════════════════════════════════ */
 
+/* Кнопка музыки */
+.music-btn {
+  position: fixed;
+  top: max(16px, calc(env(safe-area-inset-top, 0px) + 12px));
+  left: 16px;
+  z-index: 99999;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255,255,255,.95);
+  border: 2px solid var(--terra);
+  border-radius: 50%;
+  color: var(--terra);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 4px 20px rgba(0,0,0,.18);
+  transition: background .2s, color .2s;
+}
+.music-btn:active  { transform: scale(.94); }
+.music-btn.playing { background: var(--terra); color: #fff; }
+
 /* Кнопка-переключатель */
 .a11y-btn {
   position: fixed;

@@ -10,9 +10,61 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&family=Great+Vibes&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=6" />
+  <link rel="stylesheet" href="style.css?v=7" />
 </head>
 <body>
+
+  <!-- Фоновая музыка -->
+  <audio id="bgMusic" src="music.mp3" loop preload="auto"></audio>
+  <button class="music-btn" id="musicBtn" ontouchstart="" aria-label="Включить музыку" aria-pressed="false">
+    <svg id="musicIconOn" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M9 18V5l12-2v13M9 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm12 0c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/>
+    </svg>
+    <svg id="musicIconOff" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="display:none">
+      <path d="M9 18V5l12-2v13M9 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm12 0c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/>
+      <line x1="2" y1="2" x2="22" y2="22" stroke-width="2"/>
+    </svg>
+  </button>
+  <script>
+  (function () {
+    var audio   = document.getElementById('bgMusic');
+    var btn     = document.getElementById('musicBtn');
+    var iconOn  = document.getElementById('musicIconOn');
+    var iconOff = document.getElementById('musicIconOff');
+    var playing = false;
+
+    function setPlaying(on) {
+      playing = on;
+      btn.setAttribute('aria-pressed', String(on));
+      btn.classList.toggle('playing', on);
+      iconOn.style.display  = on ? '' : 'none';
+      iconOff.style.display = on ? 'none' : '';
+    }
+
+    btn.onclick = function () {
+      if (playing) { audio.pause(); setPlaying(false); }
+      else { audio.play().then(function(){ setPlaying(true); }).catch(function(){}); }
+    };
+
+    // Попытка автозапуска
+    audio.volume = 0.5;
+    audio.play().then(function () {
+      setPlaying(true);
+    }).catch(function () {
+      // Браузер заблокировал — запустим при первом касании
+      setPlaying(false);
+      function startOnInteraction() {
+        audio.play().then(function () { setPlaying(true); }).catch(function(){});
+        document.removeEventListener('click',      startOnInteraction);
+        document.removeEventListener('touchstart', startOnInteraction);
+        document.removeEventListener('scroll',     startOnInteraction);
+      }
+      document.addEventListener('click',      startOnInteraction, { once: true, passive: true });
+      document.addEventListener('touchstart', startOnInteraction, { once: true, passive: true });
+      document.addEventListener('scroll',     startOnInteraction, { once: true, passive: true });
+    });
+  })();
+  </script>
 
   <!-- Режим для слабовидящих -->
   <button class="a11y-btn" id="a11yBtn" ontouchstart="" aria-label="Режим для слабовидящих" aria-pressed="false">Аа</button>
