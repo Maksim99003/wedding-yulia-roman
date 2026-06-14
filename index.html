@@ -41,23 +41,36 @@
       iconOff.style.display = on ? 'none' : '';
     }
 
+    var TARGET_VOL = 0.5;
+    var FADE_MS    = 4000; // нарастание 4 секунды
+
+    function fadeIn() {
+      audio.volume = 0;
+      var start = null;
+      function step(ts) {
+        if (!start) start = ts;
+        var progress = Math.min((ts - start) / FADE_MS, 1);
+        audio.volume = progress * TARGET_VOL;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
     btn.onclick = function () {
       if (playing) { audio.pause(); setPlaying(false); }
-      else { audio.play().then(function(){ setPlaying(true); }).catch(function(){}); }
+      else { audio.play().then(function(){ fadeIn(); setPlaying(true); }).catch(function(){}); }
     };
 
     // Попытка автозапуска
-    audio.volume = 0.5;
+    audio.volume = 0;
     audio.play().then(function () {
+      fadeIn();
       setPlaying(true);
     }).catch(function () {
-      // Браузер заблокировал — запустим при первом касании
+      // Браузер заблокировал — запустим при первом взаимодействии
       setPlaying(false);
       function startOnInteraction() {
-        audio.play().then(function () { setPlaying(true); }).catch(function(){});
-        document.removeEventListener('click',      startOnInteraction);
-        document.removeEventListener('touchstart', startOnInteraction);
-        document.removeEventListener('scroll',     startOnInteraction);
+        audio.play().then(function () { fadeIn(); setPlaying(true); }).catch(function(){});
       }
       document.addEventListener('click',      startOnInteraction, { once: true, passive: true });
       document.addEventListener('touchstart', startOnInteraction, { once: true, passive: true });
