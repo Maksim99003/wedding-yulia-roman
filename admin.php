@@ -4,9 +4,10 @@ require_once __DIR__ . '/config.php';
 
 if (isset($_GET['logout'])) { session_destroy(); header('Location: admin.php'); exit; }
 
-$error   = '';
-$success = $_SESSION['flash'] ?? '';
-unset($_SESSION['flash']);
+$error        = '';
+$success      = $_SESSION['flash']      ?? '';
+$successName  = $_SESSION['flash_name'] ?? '';
+unset($_SESSION['flash'], $_SESSION['flash_name']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
     if ($_POST['password'] === ADMIN_PASS) { $_SESSION['admin_auth'] = true; header('Location: admin.php'); exit; }
@@ -39,7 +40,8 @@ if ($isAuth) {
                 while (isset($guests[$slug])) $slug = $base . $j++;
                 $guests[$slug] = ['members' => $members, 'slug' => $slug, 'created_at' => date('Y-m-d\TH:i:s'), 'rsvp' => null];
                 save_guests($guests);
-                $_SESSION['flash'] = SITE_URL . '/invite_' . $slug;
+                $_SESSION['flash']      = SITE_URL . '/invite_' . $slug;
+                $_SESSION['flash_name'] = $members[0]['first'];
             }
             header('Location: admin.php'); exit;
         }
@@ -331,7 +333,13 @@ tbody tr:last-child td{border-bottom:none}
       </div>
     </form>
     <?php if ($success): ?>
-    <div class="success-link">Ссылка создана: <a href="<?= h($success) ?>" target="_blank"><?= h($success) ?></a></div>
+    <div class="success-link">
+      Ссылка создана: <a href="<?= h($success) ?>" target="_blank"><?= h($success) ?></a>
+      <div style="margin-top:.6rem;display:flex;gap:8px">
+        <button class="copy-btn" onclick="copyLink(this,'<?= h($success) ?>')">Скопировать ссылку</button>
+        <button class="copy-btn" onclick="copyInvite(this,'<?= h($successName) ?>','<?= h($success) ?>')">Скопировать текст приглашения</button>
+      </div>
+    </div>
     <?php endif; ?>
   </div>
 
@@ -409,7 +417,8 @@ tbody tr:last-child td{border-bottom:none}
           <td>
             <div class="link-wrap">
               <span class="link-txt" title="<?= h($url) ?>"><?= h($url) ?></span>
-              <button class="copy-btn" onclick="copyLink(this,'<?= h($url) ?>')">Копировать</button>
+              <button class="copy-btn" onclick="copyLink(this,'<?= h($url) ?>')">Ссылку</button>
+              <button class="copy-btn" onclick="copyInvite(this,'<?= h($g['members'][0]['first']) ?>','<?= h($url) ?>')">Текст</button>
             </div>
           </td>
           <td>
@@ -468,6 +477,20 @@ function toggleAdd() {
   var p = document.getElementById('addPanel');
   p.classList.toggle('open');
   if (p.classList.contains('open')) { var fi = p.querySelector('input[type=text]'); if (fi) fi.focus(); }
+}
+function copyInvite(btn, name, url) {
+  var text = name + ', привет! Мы с Ромой хотели бы пригласить тебя на нашу свадьбу — будем очень рады разделить этот день с тобой. Мы сделали электронное приглашение, там вся информация: ' + url;
+  var orig = btn.textContent;
+  function done() {
+    btn.textContent = 'Скопировано!';
+    btn.classList.add('copied');
+    setTimeout(function () { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+  }
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(done).catch(function () { fallback(text, done); });
+  } else {
+    fallback(text, done);
+  }
 }
 function copyLink(btn, url) {
   function done() {
