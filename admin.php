@@ -41,7 +41,7 @@ if ($isAuth) {
                 $guests[$slug] = ['members' => $members, 'slug' => $slug, 'created_at' => date('Y-m-d\TH:i:s'), 'rsvp' => null];
                 save_guests($guests);
                 $_SESSION['flash']      = SITE_URL . '/invite_' . $slug;
-                $_SESSION['flash_name'] = $members[0]['first'];
+                $_SESSION['flash_name'] = implode('|', array_column($members, 'first'));
             }
             header('Location: admin.php'); exit;
         }
@@ -401,8 +401,9 @@ tbody tr:last-child td{border-bottom:none}
                 ? ($pl ? 'Не будут' : 'Не будет')
                 : '—');
         if ($st === 'not_attending') { $zagsCls = 'badge-zags-na'; $zagsTxt = '—'; }
-        $displayNames = guestDisplayNames($g);
-        $primaryName  = $displayNames[0];
+        $displayNames  = guestDisplayNames($g);
+        $primaryName   = $displayNames[0];
+        $allFirstNames = implode('|', array_column($g['members'], 'first'));
       ?>
         <tr data-status="<?= $st ?? 'wait' ?>" data-zags="<?= $zags ?? 'unknown' ?>">
           <td class="td-num"><?= $n ?></td>
@@ -418,7 +419,7 @@ tbody tr:last-child td{border-bottom:none}
             <div class="link-wrap">
               <span class="link-txt" title="<?= h($url) ?>"><?= h($url) ?></span>
               <button class="copy-btn" onclick="copyLink(this,'<?= h($url) ?>')">Ссылку</button>
-              <button class="copy-btn" onclick="copyInvite(this,'<?= h($g['members'][0]['first']) ?>','<?= h($url) ?>')">Текст</button>
+              <button class="copy-btn" onclick="copyInvite(this,'<?= h($allFirstNames) ?>','<?= h($url) ?>')">Текст</button>
             </div>
           </td>
           <td>
@@ -478,8 +479,18 @@ function toggleAdd() {
   p.classList.toggle('open');
   if (p.classList.contains('open')) { var fi = p.querySelector('input[type=text]'); if (fi) fi.focus(); }
 }
-function copyInvite(btn, name, url) {
-  var text = name + ', привет! Мы с Ромой хотели бы пригласить тебя на нашу свадьбу — будем очень рады разделить этот день с тобой. Мы сделали электронное приглашение, там вся информация: ' + url;
+function copyInvite(btn, namesStr, url) {
+  var names = namesStr.split('|');
+  var greeting;
+  if (names.length === 1) {
+    greeting = names[0];
+  } else if (names.length === 2) {
+    greeting = names[0] + ' и ' + names[1];
+  } else {
+    greeting = names.slice(0, -1).join(', ') + ' и ' + names[names.length - 1];
+  }
+  var plural = names.length > 1;
+  var text = greeting + ', привет! Мы с Ромой хотели бы пригласить ' + (plural ? 'вас' : 'тебя') + ' на нашу свадьбу — будем очень рады разделить этот день ' + (plural ? 'с вами' : 'с тобой') + '. Мы сделали электронное приглашение, там вся информация: ' + url;
   var orig = btn.textContent;
   function done() {
     btn.textContent = 'Скопировано!';
